@@ -1,3 +1,4 @@
+using System;
 using CarFlipTycoon.Core;
 using CarFlipTycoon.Data;
 using UnityEngine;
@@ -7,16 +8,20 @@ namespace CarFlipTycoon.UI
 {
     /// <summary>
     /// Garage-Ansicht: Liste aller aktuell im Besitz befindlichen Autos mit Status-Anzeige
-    /// pro Auto, sowie ein Button, um die Garagen-Kapazität gegen Coins zu erweitern.
+    /// pro Auto, ein Button je Auto für die Tuning-Detailseite, sowie ein Button, um die
+    /// Garagen-Kapazität gegen Coins zu erweitern.
     /// </summary>
     public class GarageView : MonoBehaviour
     {
         private RectTransform _content;
         private Button _expandButton;
         private Text _expandButtonText;
+        private Action<string> _onOpenCarDetail;
 
-        public void Build(RectTransform panel)
+        public void Build(RectTransform panel, Action<string> onOpenCarDetail)
         {
+            _onOpenCarDetail = onOpenCarDetail;
+
             var rootLayout = panel.gameObject.AddComponent<VerticalLayoutGroup>();
             rootLayout.childControlWidth = true;
             rootLayout.childForceExpandWidth = true;
@@ -45,6 +50,7 @@ namespace CarFlipTycoon.UI
 
             GameManager.Instance.OnGarageChanged += Rebuild;
             GarageManager.Instance.OnCapacityChanged += Rebuild;
+            TimerManager.Instance.OnTimersChanged += Rebuild;
             EconomyManager.Instance.OnCoinsChanged += OnCoinsChanged;
 
             Rebuild();
@@ -60,6 +66,11 @@ namespace CarFlipTycoon.UI
             if (GarageManager.Instance != null)
             {
                 GarageManager.Instance.OnCapacityChanged -= Rebuild;
+            }
+
+            if (TimerManager.Instance != null)
+            {
+                TimerManager.Instance.OnTimersChanged -= Rebuild;
             }
 
             if (EconomyManager.Instance != null)
@@ -112,27 +123,44 @@ namespace CarFlipTycoon.UI
             rowLayoutElement.preferredHeight = 200;
             rowLayoutElement.minHeight = 200;
 
-            var rowLayout = row.gameObject.AddComponent<VerticalLayoutGroup>();
+            var rowLayout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
             rowLayout.padding = new RectOffset(20, 20, 12, 12);
-            rowLayout.spacing = 4;
+            rowLayout.spacing = 16;
+            rowLayout.childAlignment = TextAnchor.MiddleLeft;
             rowLayout.childControlWidth = true;
-            rowLayout.childForceExpandWidth = true;
+            rowLayout.childForceExpandWidth = false;
             rowLayout.childControlHeight = true;
-            rowLayout.childForceExpandHeight = false;
+            rowLayout.childForceExpandHeight = true;
 
-            var modelText = UIFactory.CreateText(row, modelName, 34, Color.white);
+            var infoColumn = UIFactory.CreateContainer(row, "Info");
+            var infoLayoutElement = infoColumn.gameObject.AddComponent<LayoutElement>();
+            infoLayoutElement.flexibleWidth = 1;
+
+            var infoLayout = infoColumn.gameObject.AddComponent<VerticalLayoutGroup>();
+            infoLayout.childControlWidth = true;
+            infoLayout.childForceExpandWidth = true;
+            infoLayout.childControlHeight = true;
+            infoLayout.childForceExpandHeight = false;
+            infoLayout.spacing = 4;
+
+            var modelText = UIFactory.CreateText(infoColumn, modelName, 34, Color.white);
             modelText.gameObject.AddComponent<LayoutElement>().preferredHeight = 44;
 
-            var classText = UIFactory.CreateText(row, $"{className} · Kaufpreis: {car.purchasePrice:N0} Coins", 24,
+            var classText = UIFactory.CreateText(infoColumn, $"{className} · Kaufpreis: {car.purchasePrice:N0} Coins", 24,
                 new Color(0.8f, 0.8f, 0.8f));
             classText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
 
-            var conditionText = UIFactory.CreateText(row, car.condition.GetDisplayName(), 24,
+            var conditionText = UIFactory.CreateText(infoColumn, car.condition.GetDisplayName(), 24,
                 UIFactory.GetConditionColor(car.condition));
             conditionText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
 
-            var statusText = UIFactory.CreateText(row, car.status.GetDisplayName(), 24, new Color(0.55f, 0.75f, 1f));
+            var statusText = UIFactory.CreateText(infoColumn, car.status.GetDisplayName(), 24, new Color(0.55f, 0.75f, 1f));
             statusText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+
+            var tuneButton = UIFactory.CreateButton(row, "Tunen", new Color(0.3f, 0.35f, 0.45f), Color.white, 26);
+            tuneButton.gameObject.AddComponent<LayoutElement>().preferredWidth = 180;
+            string instanceId = car.instanceId;
+            tuneButton.onClick.AddListener(() => _onOpenCarDetail?.Invoke(instanceId));
         }
     }
 }

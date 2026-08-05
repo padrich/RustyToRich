@@ -47,10 +47,14 @@ namespace CarFlipTycoon.Core
             root.AddComponent<GarageManager>();
             root.AddComponent<AdManager>();
             root.AddComponent<GameManager>();
-            // MarketplaceManager greift in Start() auf GameManager.Instance.AllCarTypes zu;
-            // alle Awake()-Aufrufe der zuvor hinzugefügten Komponenten laufen garantiert
-            // vor jedem Start(), daher ist die Reihenfolge hier unkritisch.
+            // MarketplaceManager/TimerManager/Tuning-Manager greifen in Start() auf
+            // GameManager.Instance zu; alle Awake()-Aufrufe der zuvor hinzugefügten
+            // Komponenten laufen garantiert vor jedem Start(), daher ist die
+            // Reihenfolge ab hier unkritisch.
             root.AddComponent<MarketplaceManager>();
+            root.AddComponent<TimerManager>();
+            root.AddComponent<CosmeticTuningManager>();
+            root.AddComponent<PerformanceTuningManager>();
         }
 
         private void Awake()

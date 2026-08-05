@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29cd7e5f8d440ce983bb171e787bfdf, type: 3}
+  m_Name: Auspuffanlage_Stage2
+  m_EditorClassIdentifier:
+  partId: perf_auspuff_stage2
+  partName: Sportauspuff + Downpipe
+  category: 4
+  description: Sportauspuff inkl. Downpipe mit groesserem Durchmesser.
+  stage: 2
+  price: 1200
+  horsePowerBonusFlat: 12
+  horsePowerBonusPercent: 0.05
+  torqueBonusFlat: 10
+  torqueBonusPercent: 0.04
+  rpmShift: 0
+  dynoStabilityBonus: 0.0
+  forcedInductionRole: 3
+  forcedInductionBonusMultiplier: 1.6
+  compatibilityNote: Wirkt deutlich staerker in Kombination mit Turbolader oder Kompressor.
+  installDurationSeconds: 55

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29cd7e5f8d440ce983bb171e787bfdf, type: 3}
+  m_Name: Ansaugung_Stage2
+  m_EditorClassIdentifier:
+  partId: perf_ansaugung_stage2
+  partName: Sportluftfilter-System mit Ansaugrohr
+  category: 0
+  description: Offenes Ansaugsystem inkl. optimiertem Ansaugrohr.
+  stage: 2
+  price: 600
+  horsePowerBonusFlat: 9
+  horsePowerBonusPercent: 0.03
+  torqueBonusFlat: 4
+  torqueBonusPercent: 0.0
+  rpmShift: 0
+  dynoStabilityBonus: 0.0
+  forcedInductionRole: 0
+  forcedInductionBonusMultiplier: 1.0
+  compatibilityNote: Kleiner, aber spuerbarer Leistungsgewinn - wirkt bei allen Motoren.
+  installDurationSeconds: 35

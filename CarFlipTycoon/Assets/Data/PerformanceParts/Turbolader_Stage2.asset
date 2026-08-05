@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29cd7e5f8d440ce983bb171e787bfdf, type: 3}
+  m_Name: Turbolader_Stage2
+  m_EditorClassIdentifier:
+  partId: perf_turbo_stage2
+  partName: Upgrade-Turbolader Stufe 2 (Bigturbo)
+  category: 1
+  description: Grosser Bigturbo fuer maximale Leistung im oberen Drehzahlbereich.
+  stage: 2
+  price: 6500
+  horsePowerBonusFlat: 40
+  horsePowerBonusPercent: 0.28
+  torqueBonusFlat: 55
+  torqueBonusPercent: 0.32
+  rpmShift: 500
+  dynoStabilityBonus: 0.0
+  forcedInductionRole: 1
+  forcedInductionBonusMultiplier: 1.0
+  compatibilityNote: Schliesst sich mit einem bereits verbauten Aufladungssystem aus (nur ein Turbolader oder Kompressor gleichzeitig moeglich).
+  installDurationSeconds: 240

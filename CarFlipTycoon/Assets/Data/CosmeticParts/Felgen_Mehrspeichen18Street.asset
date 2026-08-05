@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71dfb91000444fe3b1102da756c962d2, type: 3}
+  m_Name: Felgen_Mehrspeichen18Street
+  m_EditorClassIdentifier:
+  partId: cosmetic_felgen_mehrspeichen18_street
+  partName: Mehrspeichen 18 Zoll – Street
+  category: 0
+  description: Klassisches Mehrspeichen-Design fuer den Street-Look.
+  price: 1200
+  valueFactor: 1.08
+  styleTags:
+  - 2
+  wheelSizeInches: 18
+  heightTier: 0
+  icon: {fileID: 0}
+  previewOverlaySprite: {fileID: 0}
+  previewSortOrder: 20
+  installDurationSeconds: 60

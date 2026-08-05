@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29cd7e5f8d440ce983bb171e787bfdf, type: 3}
+  m_Name: Nockenwellen_Race
+  m_EditorClassIdentifier:
+  partId: perf_nocken_race
+  partName: Race-Nockenwellen (aggressiv)
+  category: 6
+  description: Aggressiv ausgelegte Race-Nockenwellen fuer maximale Spitzenleistung.
+  stage: 2
+  price: 2600
+  horsePowerBonusFlat: 0
+  horsePowerBonusPercent: 0.12
+  torqueBonusFlat: 0
+  torqueBonusPercent: -0.06
+  rpmShift: 700
+  dynoStabilityBonus: 0.0
+  forcedInductionRole: 0
+  forcedInductionBonusMultiplier: 1.0
+  compatibilityNote: Verschiebt die Leistungskurve zu hoeheren Drehzahlen - weniger Durchzug im unteren Bereich.
+  installDurationSeconds: 210
