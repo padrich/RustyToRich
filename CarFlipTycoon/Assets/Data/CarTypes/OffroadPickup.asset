@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9822d46fd4494f29867164c82dd91d33, type: 3}
+  m_Name: OffroadPickup
+  m_EditorClassIdentifier:
+  carTypeId: cartype_offroadpickup
+  modelName: Offroad-Pickup
+  carClass: 7
+  description: Robuster Pickup fuer grobes Gelaende, beliebt bei Offroad-Tunern.
+  baseEngineCurve:
+    points:
+    - rpm: 1200
+      horsePower: 70
+      torqueNm: 220
+    - rpm: 2800
+      horsePower: 140
+      torqueNm: 360
+    - rpm: 4500
+      horsePower: 190
+      torqueNm: 330
+    - rpm: 5800
+      horsePower: 170
+      torqueNm: 260
+  basePriceMin: 8000
+  basePriceMax: 18000
+  icon: {fileID: 0}
+  additionalSprites: []
