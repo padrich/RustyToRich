@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9822d46fd4494f29867164c82dd91d33, type: 3}
+  m_Name: TrailmasterSUV
+  m_EditorClassIdentifier:
+  carTypeId: cartype_trailmastersuv
+  modelName: Trailmaster SUV
+  carClass: 8
+  description: Kraeftiger SUV mit viel Durchzug fuer Gelaende und Anhaengerlast.
+  baseEngineCurve:
+    points:
+    - rpm: 1200
+      horsePower: 90
+      torqueNm: 240
+    - rpm: 2800
+      horsePower: 160
+      torqueNm: 340
+    - rpm: 4500
+      horsePower: 220
+      torqueNm: 320
+    - rpm: 5500
+      horsePower: 200
+      torqueNm: 270
+  basePriceMin: 18000
+  basePriceMax: 32000
+  icon: {fileID: 0}
+  additionalSprites: []

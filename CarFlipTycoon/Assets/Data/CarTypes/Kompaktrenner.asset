@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9822d46fd4494f29867164c82dd91d33, type: 3}
+  m_Name: Kompaktrenner
+  m_EditorClassIdentifier:
+  carTypeId: cartype_kompaktrenner
+  modelName: Kompaktrenner
+  carClass: 1
+  description: Sportlich abgestimmter Kompaktwagen mit ordentlich Punch fuer sein Segment.
+  baseEngineCurve:
+    points:
+    - rpm: 1200
+      horsePower: 40
+      torqueNm: 110
+    - rpm: 3200
+      horsePower: 90
+      torqueNm: 175
+    - rpm: 5200
+      horsePower: 130
+      torqueNm: 165
+    - rpm: 6800
+      horsePower: 118
+      torqueNm: 140
+  basePriceMin: 4000
+  basePriceMax: 7000
+  icon: {fileID: 0}
+  additionalSprites: []

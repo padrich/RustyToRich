@@ -17,6 +17,7 @@ namespace CarFlipTycoon.Data
 
         public int purchasePrice;
         public string purchaseDateUtc;
+        public CarCondition condition;
 
         public List<InstalledCosmeticPart> cosmeticParts = new List<InstalledCosmeticPart>();
         public List<InstalledPerformancePart> performanceParts = new List<InstalledPerformancePart>();
@@ -27,11 +28,12 @@ namespace CarFlipTycoon.Data
 
         public CarInstance() { }
 
-        public CarInstance(string carTypeId, int purchasePrice)
+        public CarInstance(string carTypeId, int purchasePrice, CarCondition condition)
         {
             instanceId = IdFactory.NewId();
             this.carTypeId = carTypeId;
             this.purchasePrice = purchasePrice;
+            this.condition = condition;
             purchaseDateUtc = IdFactory.NowUtcIso();
             status = CarStatus.InGarage;
         }

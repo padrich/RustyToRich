@@ -1,0 +1,138 @@
+using CarFlipTycoon.Core;
+using CarFlipTycoon.Data;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace CarFlipTycoon.UI
+{
+    /// <summary>
+    /// Garage-Ansicht: Liste aller aktuell im Besitz befindlichen Autos mit Status-Anzeige
+    /// pro Auto, sowie ein Button, um die Garagen-Kapazität gegen Coins zu erweitern.
+    /// </summary>
+    public class GarageView : MonoBehaviour
+    {
+        private RectTransform _content;
+        private Button _expandButton;
+        private Text _expandButtonText;
+
+        public void Build(RectTransform panel)
+        {
+            var rootLayout = panel.gameObject.AddComponent<VerticalLayoutGroup>();
+            rootLayout.childControlWidth = true;
+            rootLayout.childForceExpandWidth = true;
+            rootLayout.childControlHeight = true;
+            rootLayout.childForceExpandHeight = true;
+
+            var expandBar = UIFactory.CreatePanel(panel, "ExpandBar", new Color(0f, 0f, 0f, 0.2f));
+            var expandBarLayoutElement = expandBar.gameObject.AddComponent<LayoutElement>();
+            expandBarLayoutElement.preferredHeight = 110;
+            expandBarLayoutElement.minHeight = 110;
+
+            var expandButtonHolder = UIFactory.CreateContainer(expandBar, "ExpandButtonHolder");
+            expandButtonHolder.anchorMin = new Vector2(0f, 0f);
+            expandButtonHolder.anchorMax = new Vector2(1f, 1f);
+            expandButtonHolder.offsetMin = new Vector2(16f, 12f);
+            expandButtonHolder.offsetMax = new Vector2(-16f, -12f);
+
+            _expandButton = UIFactory.CreateButton(expandButtonHolder, "Garage erweitern", new Color(0.2f, 0.4f, 0.7f), Color.white, 28);
+            UIFactory.StretchFull(_expandButton.GetComponent<RectTransform>());
+            _expandButtonText = _expandButton.GetComponentInChildren<Text>();
+            _expandButton.onClick.AddListener(Expand);
+
+            var scrollContainer = UIFactory.CreateContainer(panel, "ScrollContainer");
+            scrollContainer.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1;
+            UIFactory.CreateScrollList(scrollContainer, out _content);
+
+            GameManager.Instance.OnGarageChanged += Rebuild;
+            GarageManager.Instance.OnCapacityChanged += Rebuild;
+            EconomyManager.Instance.OnCoinsChanged += OnCoinsChanged;
+
+            Rebuild();
+        }
+
+        private void OnDestroy()
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.OnGarageChanged -= Rebuild;
+            }
+
+            if (GarageManager.Instance != null)
+            {
+                GarageManager.Instance.OnCapacityChanged -= Rebuild;
+            }
+
+            if (EconomyManager.Instance != null)
+            {
+                EconomyManager.Instance.OnCoinsChanged -= OnCoinsChanged;
+            }
+        }
+
+        private void OnCoinsChanged(long coins) => RefreshExpandButton();
+
+        private void Expand()
+        {
+            if (!GarageManager.Instance.TryExpandCapacity())
+            {
+                Debug.LogWarning("[GarageView] Garagen-Erweiterung fehlgeschlagen: nicht genug Coins.");
+            }
+        }
+
+        private void RefreshExpandButton()
+        {
+            int cost = GarageManager.Instance.NextExpansionCost;
+            _expandButtonText.text = $"Garage erweitern ({cost:N0} Coins)";
+            _expandButton.interactable = EconomyManager.Instance.CanAfford(cost);
+        }
+
+        private void Rebuild()
+        {
+            RefreshExpandButton();
+
+            for (int i = _content.childCount - 1; i >= 0; i--)
+            {
+                Destroy(_content.GetChild(i).gameObject);
+            }
+
+            var ownedCars = GameManager.Instance.OwnedCars;
+            for (int i = 0; i < ownedCars.Count; i++)
+            {
+                CreateCarRow(ownedCars[i]);
+            }
+        }
+
+        private void CreateCarRow(CarInstance car)
+        {
+            var carType = GameManager.Instance.GetCarType(car.carTypeId);
+            string modelName = carType != null ? carType.modelName : car.carTypeId;
+            string className = carType != null ? carType.carClass.GetDisplayName() : "-";
+
+            var row = UIFactory.CreatePanel(_content, "Car_" + car.instanceId, new Color(1f, 1f, 1f, 0.06f));
+            var rowLayoutElement = row.gameObject.AddComponent<LayoutElement>();
+            rowLayoutElement.preferredHeight = 200;
+            rowLayoutElement.minHeight = 200;
+
+            var rowLayout = row.gameObject.AddComponent<VerticalLayoutGroup>();
+            rowLayout.padding = new RectOffset(20, 20, 12, 12);
+            rowLayout.spacing = 4;
+            rowLayout.childControlWidth = true;
+            rowLayout.childForceExpandWidth = true;
+            rowLayout.childControlHeight = true;
+            rowLayout.childForceExpandHeight = false;
+
+            var modelText = UIFactory.CreateText(row, modelName, 34, Color.white);
+            modelText.gameObject.AddComponent<LayoutElement>().preferredHeight = 44;
+
+            var classText = UIFactory.CreateText(row, $"{className} · Kaufpreis: {car.purchasePrice:N0} Coins", 24,
+                new Color(0.8f, 0.8f, 0.8f));
+            classText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+
+            var conditionText = UIFactory.CreateText(row, car.condition.GetDisplayName(), 24,
+                UIFactory.GetConditionColor(car.condition));
+            conditionText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+
+            var statusText = UIFactory.CreateText(row, car.status.GetDisplayName(), 24, new Color(0.55f, 0.75f, 1f));
+            statusText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+        }
+    }
+}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CarFlipTycoon.Data;
 using CarFlipTycoon.SaveSystem;
@@ -14,12 +15,19 @@ namespace CarFlipTycoon.Core
     public class GameManager : MonoBehaviour
     {
         private const string CarTypeDatabaseResourcePath = "CarTypeDatabase";
+        private static readonly List<CarType> EmptyCarTypes = new List<CarType>();
 
         public static GameManager Instance { get; private set; }
 
         private CarTypeDatabase _carTypeDatabase;
 
+        /// <summary>Ausgelöst, nachdem sich der Fahrzeugbestand der Garage geändert hat (Kauf/Verkauf).</summary>
+        public event Action OnGarageChanged;
+
         public IReadOnlyList<CarInstance> OwnedCars => SaveManager.Instance.CurrentSave.ownedCars;
+
+        public IReadOnlyList<CarType> AllCarTypes =>
+            _carTypeDatabase != null ? (IReadOnlyList<CarType>)_carTypeDatabase.carTypes : EmptyCarTypes;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
@@ -36,8 +44,13 @@ namespace CarFlipTycoon.Core
             // da EconomyManager/GameManager direkt auf SaveManager.Instance zugreifen.
             root.AddComponent<SaveManager>();
             root.AddComponent<EconomyManager>();
+            root.AddComponent<GarageManager>();
             root.AddComponent<AdManager>();
             root.AddComponent<GameManager>();
+            // MarketplaceManager greift in Start() auf GameManager.Instance.AllCarTypes zu;
+            // alle Awake()-Aufrufe der zuvor hinzugefügten Komponenten laufen garantiert
+            // vor jedem Start(), daher ist die Reihenfolge hier unkritisch.
+            root.AddComponent<MarketplaceManager>();
         }
 
         private void Awake()
@@ -57,7 +70,7 @@ namespace CarFlipTycoon.Core
             return _carTypeDatabase != null ? _carTypeDatabase.GetById(carTypeId) : null;
         }
 
-        public CarInstance AddCarToGarage(CarType carType, int purchasePrice)
+        public CarInstance AddCarToGarage(CarType carType, int purchasePrice, CarCondition condition)
         {
             if (carType == null)
             {
@@ -65,9 +78,10 @@ namespace CarFlipTycoon.Core
                 return null;
             }
 
-            var instance = new CarInstance(carType.CarTypeId, purchasePrice);
+            var instance = new CarInstance(carType.CarTypeId, purchasePrice, condition);
             SaveManager.Instance.CurrentSave.ownedCars.Add(instance);
             SaveManager.Instance.Save();
+            OnGarageChanged?.Invoke();
             return instance;
         }
 
@@ -112,6 +126,7 @@ namespace CarFlipTycoon.Core
 
             EconomyManager.Instance.AddCoins(salePrice);
             SaveManager.Instance.Save();
+            OnGarageChanged?.Invoke();
             return true;
         }
     }

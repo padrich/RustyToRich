@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CarFlipTycoon.Data;
+using UnityEngine;
 
 namespace CarFlipTycoon.SaveSystem
 {
@@ -14,9 +15,13 @@ namespace CarFlipTycoon.SaveSystem
     {
         public int saveVersion = 1;
 
-        public long coins;
+        public long coins = 2000;
+
+        [Tooltip("Anzahl verfügbarer Stellplätze in der Garage. Start: 3, erweiterbar gegen Coins.")]
+        public int garageCapacity = 3;
 
         public List<CarInstance> ownedCars = new List<CarInstance>();
+        public List<MarketOffer> marketOffers = new List<MarketOffer>();
         public List<TimerData> activeTimers = new List<TimerData>();
         public List<AuctionData> activeAuctions = new List<AuctionData>();
         public List<SaleRecord> salesHistory = new List<SaleRecord>();

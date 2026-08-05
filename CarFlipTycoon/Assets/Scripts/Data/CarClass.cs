@@ -1,6 +1,11 @@
 namespace CarFlipTycoon.Data
 {
     /// <summary>Fahrzeugklasse eines Auto-Typs (Vorlage).</summary>
+    /// <remarks>
+    /// Neue Werte werden am Ende angehängt, da CarType-Assets den Enum-Wert als
+    /// Index in YAML serialisieren – ein Einfügen in der Mitte würde bestehende
+    /// Assets stillschweigend auf die falsche Klasse verschieben.
+    /// </remarks>
     public enum CarClass
     {
         Kleinwagen,
@@ -13,6 +18,7 @@ namespace CarFlipTycoon.Data
         OffroadPickup,
         SUV,
         Kombi,
-        Oldtimer
+        Oldtimer,
+        Coupe
     }
 }
