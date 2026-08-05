@@ -25,5 +25,10 @@ namespace CarFlipTycoon.SaveSystem
         public List<TimerData> activeTimers = new List<TimerData>();
         public List<AuctionData> activeAuctions = new List<AuctionData>();
         public List<SaleRecord> salesHistory = new List<SaleRecord>();
+
+        [Header("Progression")]
+        public List<string> claimedAchievementIds = new List<string>();
+        public string lastDailyRewardDateUtc;
+        public int dailyRewardStreak;
     }
 }

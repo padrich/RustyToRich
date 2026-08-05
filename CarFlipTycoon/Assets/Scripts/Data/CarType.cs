@@ -25,6 +25,12 @@ namespace CarFlipTycoon.Data
         public int basePriceMin;
         public int basePriceMax;
 
+        [Header("Freischaltung")]
+        [Tooltip("0 = von Anfang an im Marktplatz verfügbar. Sonst: Mindest-Gesamtgewinn (siehe Verkaufshistorie) zur Freischaltung.")]
+        public int unlockRequiredTotalProfit;
+        [Tooltip("0 = von Anfang an im Marktplatz verfügbar. Sonst: Mindestanzahl verkaufter Autos zur Freischaltung.")]
+        public int unlockRequiredSalesCount;
+
         [Header("Grafik")]
         public Sprite icon;
         public Sprite[] additionalSprites;

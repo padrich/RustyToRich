@@ -32,5 +32,7 @@ MonoBehaviour:
       torqueNm: 360
   basePriceMin: 20000
   basePriceMax: 40000
+  unlockRequiredTotalProfit: 15000
+  unlockRequiredSalesCount: 0
   icon: {fileID: 0}
   additionalSprites: []

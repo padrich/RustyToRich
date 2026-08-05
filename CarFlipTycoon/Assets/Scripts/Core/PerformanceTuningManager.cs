@@ -185,7 +185,7 @@ namespace CarFlipTycoon.Core
                 return;
             }
 
-            var part = GetPart(timer.payloadPartId);
+            var part = GetPart(timer.payloadId);
             if (part == null)
             {
                 return;

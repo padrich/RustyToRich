@@ -15,10 +15,45 @@ namespace CarFlipTycoon.UI
 
         public void Build(RectTransform panel)
         {
-            UIFactory.CreateScrollList(panel, out _content);
+            var rootLayout = panel.gameObject.AddComponent<VerticalLayoutGroup>();
+            rootLayout.childControlWidth = true;
+            rootLayout.childForceExpandWidth = true;
+            rootLayout.childControlHeight = true;
+            rootLayout.childForceExpandHeight = true;
+
+            var refreshBar = UIFactory.CreatePanel(panel, "RefreshBar", new Color(0f, 0f, 0f, 0.2f));
+            var refreshBarLayoutElement = refreshBar.gameObject.AddComponent<LayoutElement>();
+            refreshBarLayoutElement.preferredHeight = 90;
+            refreshBarLayoutElement.minHeight = 90;
+
+            var refreshButtonHolder = UIFactory.CreateContainer(refreshBar, "RefreshButtonHolder");
+            refreshButtonHolder.anchorMin = new Vector2(0f, 0f);
+            refreshButtonHolder.anchorMax = new Vector2(1f, 1f);
+            refreshButtonHolder.offsetMin = new Vector2(16f, 10f);
+            refreshButtonHolder.offsetMax = new Vector2(-16f, -10f);
+
+            var refreshButton = UIFactory.CreateButton(refreshButtonHolder, "Angebote auffrischen 🔄 (Ad)",
+                new Color(0.35f, 0.3f, 0.6f), Color.white, 24);
+            UIFactory.StretchFull(refreshButton.GetComponent<RectTransform>());
+            refreshButton.onClick.AddListener(RefreshOffersNow);
+
+            var listContainer = UIFactory.CreateContainer(panel, "ListContainer");
+            listContainer.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1;
+            UIFactory.CreateScrollList(listContainer, out _content);
 
             MarketplaceManager.Instance.OnOffersChanged += Rebuild;
             Rebuild();
+        }
+
+        private void RefreshOffersNow()
+        {
+            AdManager.Instance.ShowRewardedAd(RewardedAdPurpose.RefreshMarketplaceNow, success =>
+            {
+                if (success)
+                {
+                    MarketplaceManager.Instance.RefreshAllOffersNow();
+                }
+            });
         }
 
         private void OnDestroy()

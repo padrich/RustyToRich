@@ -139,7 +139,7 @@ namespace CarFlipTycoon.Core
                 return;
             }
 
-            var part = GetPart(timer.payloadPartId);
+            var part = GetPart(timer.payloadId);
             if (part == null)
             {
                 return;
@@ -258,8 +258,32 @@ namespace CarFlipTycoon.Core
             }
 
             float styleBonus = GetStyleConsistencyBonusMultiplier(car);
+            float dynoBonus = GetDynoResultBonusMultiplier(car, carType);
 
-            return Mathf.RoundToInt(baseValue * partsMultiplier * styleBonus);
+            return Mathf.RoundToInt(baseValue * partsMultiplier * styleBonus * dynoBonus);
+        }
+
+        /// <summary>
+        /// Wertsteigerung aus einem vorliegenden Prüfstand-Ergebnis: vergleicht die gemessene
+        /// Spitzenleistung mit der Serien-Basiskurve (beide über dieselbe Nm→PS-Formel berechnet,
+        /// damit der Vergleich fair ist) und honoriert die prozentuale Mehrleistung, gedeckelt bei +40%.
+        /// </summary>
+        private static float GetDynoResultBonusMultiplier(CarInstance car, CarType carType)
+        {
+            if (car.lastDynoResult == null || !car.lastDynoResult.hasResult || carType == null)
+            {
+                return 1f;
+            }
+
+            var (baselinePeakHp, _) = PerformanceCalculator.GetPeakOutput(
+                PerformanceCalculator.BuildMeasuredCurve(carType.baseEngineCurve));
+            if (baselinePeakHp <= 0f)
+            {
+                return 1f;
+            }
+
+            float improvement = Mathf.Max(0f, car.lastDynoResult.horsePower / baselinePeakHp - 1f);
+            return 1f + Mathf.Min(improvement * 0.5f, 0.4f);
         }
     }
 }

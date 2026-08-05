@@ -152,5 +152,19 @@ namespace CarFlipTycoon.UI
                 default: return Color.white;
             }
         }
+
+        /// <summary>Deutliche Farbcodierung pro Auto-Status, z. B. für die Garage-Liste.</summary>
+        public static Color GetStatusColor(CarStatus status)
+        {
+            switch (status)
+            {
+                case CarStatus.InGarage: return new Color(0.55f, 0.85f, 0.55f);
+                case CarStatus.BeingTuned: return new Color(0.95f, 0.75f, 0.25f);
+                case CarStatus.OnDyno: return new Color(0.4f, 0.75f, 0.95f);
+                case CarStatus.InAuction: return new Color(0.85f, 0.45f, 0.85f);
+                case CarStatus.Sold: return new Color(0.6f, 0.6f, 0.6f);
+                default: return Color.white;
+            }
+        }
     }
 }

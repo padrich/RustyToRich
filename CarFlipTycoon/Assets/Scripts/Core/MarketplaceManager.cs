@@ -109,7 +109,22 @@ namespace CarFlipTycoon.Core
                 return null;
             }
 
-            var carType = carTypes[UnityEngine.Random.Range(0, carTypes.Count)];
+            // Nur bereits freigeschaltete Auto-Typen tauchen als Angebot auf (siehe ProgressionManager).
+            var candidates = new List<CarType>();
+            for (int i = 0; i < carTypes.Count; i++)
+            {
+                if (ProgressionManager.Instance == null || ProgressionManager.Instance.IsCarTypeUnlocked(carTypes[i]))
+                {
+                    candidates.Add(carTypes[i]);
+                }
+            }
+
+            if (candidates.Count == 0)
+            {
+                return null;
+            }
+
+            var carType = candidates[UnityEngine.Random.Range(0, candidates.Count)];
             var condition = (CarCondition)UnityEngine.Random.Range(0, Enum.GetValues(typeof(CarCondition)).Length);
             int basePrice = UnityEngine.Random.Range(carType.basePriceMin, carType.basePriceMax + 1);
             int price = Mathf.Max(1, Mathf.RoundToInt(basePrice * condition.GetPriceMultiplier()));
@@ -181,6 +196,27 @@ namespace CarFlipTycoon.Core
 
             error = null;
             return true;
+        }
+
+        /// <summary>Rewarded-Ad-Platzhalter: ersetzt alle aktuellen Angebote sofort durch neue, unabhängig von ihrer Restlaufzeit.</summary>
+        public void RefreshAllOffersNow()
+        {
+            var offers = SaveManager.Instance.CurrentSave.marketOffers;
+            offers.Clear();
+
+            while (offers.Count < OfferSlotCount)
+            {
+                var newOffer = GenerateOffer();
+                if (newOffer == null)
+                {
+                    break;
+                }
+
+                offers.Add(newOffer);
+            }
+
+            SaveManager.Instance.Save();
+            OnOffersChanged?.Invoke();
         }
     }
 }

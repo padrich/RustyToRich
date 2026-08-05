@@ -32,12 +32,10 @@ namespace CarFlipTycoon.UI
         private RectTransform _categoryTabBar;
         private RectTransform _partsListContainer;
         private Text _valueText;
-        private Text _timerText;
+        private TimerProgressView _timerProgress;
 
         private readonly Dictionary<CosmeticPartCategory, Button> _categoryButtons = new Dictionary<CosmeticPartCategory, Button>();
         private readonly Dictionary<int, Button> _styleButtons = new Dictionary<int, Button>();
-
-        private float _timerPollAccumulator;
 
         public void Build(RectTransform panel)
         {
@@ -56,8 +54,8 @@ namespace CarFlipTycoon.UI
 
             var infoBar = UIFactory.CreatePanel(panel, "InfoBar", new Color(0f, 0f, 0f, 0.2f));
             var infoBarLayoutElement = infoBar.gameObject.AddComponent<LayoutElement>();
-            infoBarLayoutElement.preferredHeight = 80;
-            infoBarLayoutElement.minHeight = 80;
+            infoBarLayoutElement.preferredHeight = 150;
+            infoBarLayoutElement.minHeight = 150;
             var infoBarLayout = infoBar.gameObject.AddComponent<VerticalLayoutGroup>();
             infoBarLayout.padding = new RectOffset(20, 20, 6, 6);
             infoBarLayout.childControlWidth = true;
@@ -69,8 +67,10 @@ namespace CarFlipTycoon.UI
             _valueText = UIFactory.CreateText(infoBar, "Geschätzter Auktionswert: ~0 Coins", 26, new Color(0.6f, 0.9f, 0.6f));
             _valueText.gameObject.AddComponent<LayoutElement>().preferredHeight = 34;
 
-            _timerText = UIFactory.CreateText(infoBar, string.Empty, 22, new Color(1f, 0.8f, 0.4f));
-            _timerText.gameObject.AddComponent<LayoutElement>().preferredHeight = 30;
+            var timerHolder = UIFactory.CreateContainer(infoBar, "TimerHolder");
+            timerHolder.gameObject.AddComponent<LayoutElement>().preferredHeight = 66;
+            _timerProgress = timerHolder.gameObject.AddComponent<TimerProgressView>();
+            _timerProgress.Build(timerHolder);
 
             _styleFilterBar = UIFactory.CreateContainer(panel, "StyleFilterBar");
             var styleFilterLayoutElement = _styleFilterBar.gameObject.AddComponent<LayoutElement>();
@@ -167,24 +167,8 @@ namespace CarFlipTycoon.UI
             _styleFilter = null;
             RefreshStyleFilterHighlight();
             RefreshCategoryHighlight();
+            _timerProgress.SetCar(carInstanceId);
             RefreshAll();
-        }
-
-        private void Update()
-        {
-            if (_carInstanceId == null)
-            {
-                return;
-            }
-
-            _timerPollAccumulator += Time.unscaledDeltaTime;
-            if (_timerPollAccumulator < 0.5f)
-            {
-                return;
-            }
-
-            _timerPollAccumulator = 0f;
-            RefreshTimerStatus();
         }
 
         private void HandlePartsChanged(string carInstanceId)
@@ -201,7 +185,6 @@ namespace CarFlipTycoon.UI
         {
             _preview.Refresh(GetCar());
             RefreshValue();
-            RefreshTimerStatus();
             RefreshPartsList();
         }
 
@@ -211,26 +194,6 @@ namespace CarFlipTycoon.UI
             _valueText.text = car != null
                 ? $"Geschätzter Auktionswert: ~{CosmeticTuningManager.Instance.GetEstimatedValue(car):N0} Coins"
                 : string.Empty;
-        }
-
-        private void RefreshTimerStatus()
-        {
-            var car = GetCar();
-            if (car == null)
-            {
-                _timerText.text = string.Empty;
-                return;
-            }
-
-            var timer = TimerManager.Instance.GetActiveTimer(car.instanceId);
-            if (timer == null || timer.payloadKind != TimerPayloadKind.InstallCosmeticPart)
-            {
-                _timerText.text = string.Empty;
-                return;
-            }
-
-            float remaining = TimerManager.Instance.GetRemainingSeconds(timer);
-            _timerText.text = $"Wird eingebaut: noch {Mathf.CeilToInt(remaining)}s";
         }
 
         private void RefreshStyleFilterHighlight()
@@ -272,7 +235,7 @@ namespace CarFlipTycoon.UI
 
             var activeTimer = car != null ? TimerManager.Instance.GetActiveTimer(car.instanceId) : null;
             bool isPending = activeTimer != null && activeTimer.payloadKind == TimerPayloadKind.InstallCosmeticPart
-                && activeTimer.payloadPartId == part.PartId;
+                && activeTimer.payloadId == part.PartId;
             bool carBusy = activeTimer != null;
 
             var row = UIFactory.CreatePanel(_partsListContainer, "Part_" + part.PartId,
@@ -380,7 +343,6 @@ namespace CarFlipTycoon.UI
             }
 
             RefreshPartsList();
-            RefreshTimerStatus();
         }
     }
 }

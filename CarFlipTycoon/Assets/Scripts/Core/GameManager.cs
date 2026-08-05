@@ -51,10 +51,16 @@ namespace CarFlipTycoon.Core
             // GameManager.Instance zu; alle Awake()-Aufrufe der zuvor hinzugefügten
             // Komponenten laufen garantiert vor jedem Start(), daher ist die
             // Reihenfolge ab hier unkritisch.
+            root.AddComponent<ProgressionManager>();
             root.AddComponent<MarketplaceManager>();
             root.AddComponent<TimerManager>();
             root.AddComponent<CosmeticTuningManager>();
             root.AddComponent<PerformanceTuningManager>();
+            root.AddComponent<DynoManager>();
+            root.AddComponent<AuctionManager>();
+            root.AddComponent<SalesHistoryManager>();
+            root.AddComponent<AchievementManager>();
+            root.AddComponent<DailyRewardManager>();
         }
 
         private void Awake()
@@ -117,12 +123,40 @@ namespace CarFlipTycoon.Core
             save.ownedCars.Remove(instance);
 
             var carType = GetCarType(instance.carTypeId);
+
+            int cosmeticTuningCost = 0;
+            if (instance.cosmeticParts != null)
+            {
+                for (int i = 0; i < instance.cosmeticParts.Count; i++)
+                {
+                    cosmeticTuningCost += instance.cosmeticParts[i].purchasePrice;
+                }
+            }
+
+            int performanceTuningCost = 0;
+            if (instance.performanceParts != null)
+            {
+                for (int i = 0; i < instance.performanceParts.Count; i++)
+                {
+                    performanceTuningCost += instance.performanceParts[i].purchasePrice;
+                }
+            }
+
+            bool hasDynoResult = instance.lastDynoResult != null && instance.lastDynoResult.hasResult;
+
             save.salesHistory.Add(new SaleRecord
             {
                 id = IdFactory.NewId(),
                 carInstanceId = instance.instanceId,
                 carTypeId = instance.carTypeId,
                 modelNameSnapshot = carType != null ? carType.modelName : instance.carTypeId,
+                purchasePrice = instance.purchasePrice,
+                purchaseDateUtc = instance.purchaseDateUtc,
+                cosmeticTuningCost = cosmeticTuningCost,
+                performanceTuningCost = performanceTuningCost,
+                hasDynoResult = hasDynoResult,
+                dynoHorsePower = hasDynoResult ? instance.lastDynoResult.horsePower : 0f,
+                dynoTorqueNm = hasDynoResult ? instance.lastDynoResult.torqueNm : 0f,
                 salePrice = salePrice,
                 saleDateUtc = IdFactory.NowUtcIso(),
                 saleType = saleType

@@ -9,11 +9,13 @@ using UnityEngine;
 namespace CarFlipTycoon.Core
 {
     /// <summary>
-    /// Generisches Timer-System für zeitverzögerte Vorgänge an einer Auto-Instanz
-    /// (aktuell: Optik-/Performance-Einbau, siehe <see cref="TimerPayloadKind"/>).
-    /// Läuft auf UTC-Zeitstempeln statt Frame-Zeit, damit Timer auch nach Neustart
-    /// der App korrekt weiterlaufen bzw. sofort als abgeschlossen erkannt werden.
-    /// Pro Auto ist immer nur ein Timer gleichzeitig aktiv (Status <see cref="CarStatus.BeingTuned"/>).
+    /// Generisches Timer-System ("TimedAction") für zeitgesteuerte Vorgänge an einer
+    /// Auto-Instanz: Optik-/Performance-Einbau, Prüfstand-Lauf und Auktions-Laufzeit
+    /// (siehe <see cref="TimerType"/>/<see cref="TimerPayloadKind"/>). Läuft auf realen
+    /// UTC-Zeitstempeln statt Frame-Zeit, damit Timer auch nach Hintergrund/Neustart der
+    /// App korrekt weiterlaufen bzw. beim nächsten Start sofort als abgeschlossen erkannt
+    /// werden. Mehrere Timer für unterschiedliche Autos laufen unabhängig voneinander;
+    /// pro Auto ist aber immer nur ein Timer gleichzeitig aktiv.
     /// </summary>
     public class TimerManager : MonoBehaviour
     {
@@ -85,6 +87,18 @@ namespace CarFlipTycoon.Core
             return Mathf.Max(0f, timer.durationSeconds - elapsed);
         }
 
+        /// <summary>Fortschritt von 0 (gerade gestartet) bis 1 (fertig) – für Fortschrittsbalken.</summary>
+        public float GetProgress01(TimerData timer)
+        {
+            if (timer == null || timer.durationSeconds <= 0f)
+            {
+                return 1f;
+            }
+
+            float elapsed = (float)GetElapsedSeconds(timer);
+            return Mathf.Clamp01(elapsed / timer.durationSeconds);
+        }
+
         private static double GetElapsedSeconds(TimerData timer)
         {
             if (!DateTime.TryParse(timer.startTimeUtc, CultureInfo.InvariantCulture,
@@ -96,16 +110,29 @@ namespace CarFlipTycoon.Core
             return (DateTime.UtcNow - startedAt.ToUniversalTime()).TotalSeconds;
         }
 
+        /// <summary>Welchen Auto-Status ein laufender Timer dieses Typs repräsentiert.</summary>
+        private static CarStatus StatusForTimerType(TimerType timerType)
+        {
+            switch (timerType)
+            {
+                case TimerType.Dyno: return CarStatus.OnDyno;
+                case TimerType.Auction: return CarStatus.InAuction;
+                case TimerType.Tuning:
+                case TimerType.Repair:
+                default: return CarStatus.BeingTuned;
+            }
+        }
+
         /// <summary>
-        /// Startet einen neuen Timer für ein Auto, sofern dieses aktuell nicht schon
-        /// in der Werkstatt beschäftigt ist. Setzt den Auto-Status auf <see cref="CarStatus.BeingTuned"/>.
+        /// Startet einen neuen Timer für ein Auto, sofern dieses aktuell nicht schon durch
+        /// einen anderen Timer beschäftigt ist. Setzt den zum Timer-Typ passenden Auto-Status.
         /// </summary>
         public bool TryStartTimer(string carInstanceId, TimerType timerType, float durationSeconds,
-            TimerPayloadKind payloadKind, string payloadPartId, out string error)
+            TimerPayloadKind payloadKind, string payloadId, out string error)
         {
             if (HasActiveTimer(carInstanceId))
             {
-                error = "Dieses Auto ist bereits in der Werkstatt beschäftigt.";
+                error = "Dieses Auto ist aktuell beschäftigt und nicht verfügbar.";
                 return false;
             }
 
@@ -124,15 +151,31 @@ namespace CarFlipTycoon.Core
                 startTimeUtc = IdFactory.NowUtcIso(),
                 durationSeconds = Mathf.Max(1f, durationSeconds),
                 payloadKind = payloadKind,
-                payloadPartId = payloadPartId
+                payloadId = payloadId
             };
 
             SaveManager.Instance.CurrentSave.activeTimers.Add(timer);
-            car.status = CarStatus.BeingTuned;
+            car.status = StatusForTimerType(timerType);
             SaveManager.Instance.Save();
             OnTimersChanged?.Invoke();
 
             error = null;
+            return true;
+        }
+
+        /// <summary>
+        /// Schließt einen laufenden Timer sofort ab, unabhängig von der verbleibenden Zeit –
+        /// z. B. über den "Sofort fertig ⚡"-Button bzw. später einen Rewarded Ad.
+        /// </summary>
+        public bool FinishNow(string carInstanceId)
+        {
+            var timer = GetActiveTimer(carInstanceId);
+            if (timer == null)
+            {
+                return false;
+            }
+
+            CompleteTimer(timer);
             return true;
         }
 
@@ -170,7 +213,9 @@ namespace CarFlipTycoon.Core
             SaveManager.Instance.CurrentSave.activeTimers.Remove(timer);
 
             var car = GameManager.Instance.GetCarInstance(timer.carInstanceId);
-            if (car != null && car.status == CarStatus.BeingTuned)
+            // Auktions-Timer setzen den Status nicht selbst zurück: AuctionManager übernimmt
+            // das Auto beim Abschluss vollständig (Verkauf/Status "Sold").
+            if (car != null && timer.timerType != TimerType.Auction && car.status == StatusForTimerType(timer.timerType))
             {
                 car.status = CarStatus.InGarage;
             }

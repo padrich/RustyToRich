@@ -7,17 +7,33 @@ namespace CarFlipTycoon.UI
 {
     /// <summary>
     /// Detailseite einer einzelnen Auto-Instanz: Kopfzeile mit Zurück-Button und Fahrzeugname,
-    /// sowie die beiden klar getrennten Tuning-Bereiche Optik und Performance als Unter-Tabs.
+    /// sowie die drei klar getrennten Bereiche Optik-Tuning, Performance-Tuning und Prüfstand
+    /// als Unter-Tabs.
     /// </summary>
     public class CarDetailView : MonoBehaviour
     {
+        private enum SubTab
+        {
+            Cosmetic,
+            Performance,
+            Dyno
+        }
+
+        private static readonly Color TabIdleColor = new Color(0.25f, 0.3f, 0.4f);
+        private static readonly Color TabSelectedColor = new Color(0.3f, 0.55f, 0.85f);
+
         private Text _titleText;
         private RectTransform _cosmeticPanel;
         private RectTransform _performancePanel;
+        private RectTransform _dynoPanel;
         private CosmeticTuningView _cosmeticView;
         private PerformanceTuningView _performanceView;
+        private DynoView _dynoView;
         private Button _cosmeticTabButton;
         private Button _performanceTabButton;
+        private Button _dynoTabButton;
+
+        private SubTab _activeTab = SubTab.Cosmetic;
 
         public void Build(RectTransform panel, Action onBack)
         {
@@ -61,8 +77,9 @@ namespace CarFlipTycoon.UI
             subTabLayout.childControlHeight = true;
             subTabLayout.childForceExpandHeight = true;
 
-            _cosmeticTabButton = UIFactory.CreateButton(subTabBar, "Optik", new Color(0.25f, 0.3f, 0.4f), Color.white, 28);
-            _performanceTabButton = UIFactory.CreateButton(subTabBar, "Performance", new Color(0.25f, 0.3f, 0.4f), Color.white, 28);
+            _cosmeticTabButton = UIFactory.CreateButton(subTabBar, "Optik", TabIdleColor, Color.white, 26);
+            _performanceTabButton = UIFactory.CreateButton(subTabBar, "Performance", TabIdleColor, Color.white, 26);
+            _dynoTabButton = UIFactory.CreateButton(subTabBar, "Prüfstand", TabIdleColor, Color.white, 26);
 
             var body = UIFactory.CreateContainer(panel, "DetailBody");
             body.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1;
@@ -77,10 +94,16 @@ namespace CarFlipTycoon.UI
             _performanceView = _performancePanel.gameObject.AddComponent<PerformanceTuningView>();
             _performanceView.Build(_performancePanel);
 
-            _cosmeticTabButton.onClick.AddListener(() => ShowSubTab(true));
-            _performanceTabButton.onClick.AddListener(() => ShowSubTab(false));
+            _dynoPanel = UIFactory.CreatePanel(body, "DynoPanel", new Color(0.12f, 0.13f, 0.16f, 1f));
+            UIFactory.StretchFull(_dynoPanel);
+            _dynoView = _dynoPanel.gameObject.AddComponent<DynoView>();
+            _dynoView.Build(_dynoPanel);
 
-            ShowSubTab(true);
+            _cosmeticTabButton.onClick.AddListener(() => ShowSubTab(SubTab.Cosmetic));
+            _performanceTabButton.onClick.AddListener(() => ShowSubTab(SubTab.Performance));
+            _dynoTabButton.onClick.AddListener(() => ShowSubTab(SubTab.Dyno));
+
+            ShowSubTab(SubTab.Cosmetic);
         }
 
         public void Open(string carInstanceId)
@@ -91,13 +114,20 @@ namespace CarFlipTycoon.UI
 
             _cosmeticView.SetCar(carInstanceId);
             _performanceView.SetCar(carInstanceId);
-            ShowSubTab(true);
+            _dynoView.SetCar(carInstanceId);
+            ShowSubTab(SubTab.Cosmetic);
         }
 
-        private void ShowSubTab(bool showCosmetic)
+        private void ShowSubTab(SubTab tab)
         {
-            _cosmeticPanel.gameObject.SetActive(showCosmetic);
-            _performancePanel.gameObject.SetActive(!showCosmetic);
+            _activeTab = tab;
+            _cosmeticPanel.gameObject.SetActive(tab == SubTab.Cosmetic);
+            _performancePanel.gameObject.SetActive(tab == SubTab.Performance);
+            _dynoPanel.gameObject.SetActive(tab == SubTab.Dyno);
+
+            _cosmeticTabButton.GetComponent<Image>().color = tab == SubTab.Cosmetic ? TabSelectedColor : TabIdleColor;
+            _performanceTabButton.GetComponent<Image>().color = tab == SubTab.Performance ? TabSelectedColor : TabIdleColor;
+            _dynoTabButton.GetComponent<Image>().color = tab == SubTab.Dyno ? TabSelectedColor : TabIdleColor;
         }
     }
 }

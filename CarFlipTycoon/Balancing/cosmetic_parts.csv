@@ -1,0 +1,32 @@
+partName,category,price,valueFactor,styleTags,wheelSizeInches,heightTier,installDurationSeconds
+Offroad-Rammschutz-Kit,Bodykit,1600,1.1,Offroad,0,,80.0
+Serienschuerzen,Bodykit,200,1.02,Street,0,,20.0
+Street-Bodykit,Bodykit,1800,1.14,Street,0,,90.0
+Widebody-Kit,Bodykit,3200,1.22,Racing,0,,160.0
+Beadlock 17 Zoll – Offroad,Felgen,900,1.1,Offroad,17,,45.0
+Chrom-Felgen 22 Zoll – Street,Felgen,3200,1.15,Street,22,,160.0
+Deep-Dish 19 Zoll – Racing,Felgen,1800,1.12,Racing,19,,90.0
+Forged 20 Zoll – Racing,Felgen,2600,1.18,Racing,20,,130.0
+Mehrspeichen 18 Zoll – Street,Felgen,1200,1.08,Street,18,,60.0
+Stahlfelgen 15 Zoll – Street,Felgen,300,1.02,Street,15,,20.0
+Air-Ride Stance-Kit,Hoehe,2800,1.2,Street,0,StarkTieferStance,140.0
+Gewindefahrwerk (stark tiefer),Hoehe,2200,1.15,Racing,0,StarkTieferStance,110.0
+Offroad-Lift-Kit,Hoehe,1500,1.08,Offroad,0,OffroadLift,75.0
+Serienfahrwerk,Hoehe,150,1.0,Street,0,Serienhoehe,20.0
+Sportfahrwerk (leicht tiefer),Hoehe,1100,1.1,Racing,0,LeichtTiefer,55.0
+Leichtbau-Kaefig,Kaefig,2600,1.16,Racing,0,,130.0
+Offroad-Kaefig verstaerkt,Kaefig,1900,1.12,Offroad,0,,95.0
+Renn-Kaefig (FIA-Style),Kaefig,3200,1.2,Racing,0,,160.0
+Sicherheits-Ueberrollbuegel,Kaefig,600,1.05,Street,0,,30.0
+Matte Racing-Lackierung,Lackierung,1800,1.12,Racing,0,,90.0
+Offroad-Tarnfolie,Lackierung,700,1.05,Offroad,0,,35.0
+Rallye-Streifen-Design,Lackierung,1200,1.1,Racing,0,,60.0
+Serienlack,Lackierung,100,1.0,Street,0,,20.0
+Offroad-Sitze verstaerkt,Rennsitze,700,1.06,Offroad,0,,35.0
+Serienbezuege,Rennsitze,150,1.01,Street,0,,20.0
+Sportsitze,Rennsitze,900,1.08,Street,0,,45.0
+Vollschalen-Rennsitze,Rennsitze,2400,1.16,Racing,0,,120.0
+Carbon-Renn-Spoiler,Spoiler,2200,1.18,Racing,0,,110.0
+GT-Fluegel,Spoiler,1400,1.12,Racing,0,,70.0
+Kleiner Heckspoiler,Spoiler,350,1.04,Street,0,,20.0
+Serienspoiler,Spoiler,150,1.01,Street,0,,20.0

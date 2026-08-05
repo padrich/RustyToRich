@@ -120,8 +120,8 @@ namespace CarFlipTycoon.UI
 
             var row = UIFactory.CreatePanel(_content, "Car_" + car.instanceId, new Color(1f, 1f, 1f, 0.06f));
             var rowLayoutElement = row.gameObject.AddComponent<LayoutElement>();
-            rowLayoutElement.preferredHeight = 200;
-            rowLayoutElement.minHeight = 200;
+            rowLayoutElement.preferredHeight = 260;
+            rowLayoutElement.minHeight = 260;
 
             var rowLayout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
             rowLayout.padding = new RectOffset(20, 20, 12, 12);
@@ -154,8 +154,14 @@ namespace CarFlipTycoon.UI
                 UIFactory.GetConditionColor(car.condition));
             conditionText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
 
-            var statusText = UIFactory.CreateText(infoColumn, car.status.GetDisplayName(), 24, new Color(0.55f, 0.75f, 1f));
+            var statusText = UIFactory.CreateText(infoColumn, car.status.GetDisplayName(), 24, UIFactory.GetStatusColor(car.status));
             statusText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+
+            var timerHolder = UIFactory.CreateContainer(infoColumn, "TimerHolder");
+            timerHolder.gameObject.AddComponent<LayoutElement>().preferredHeight = 66;
+            var timerProgress = timerHolder.gameObject.AddComponent<TimerProgressView>();
+            timerProgress.Build(timerHolder);
+            timerProgress.SetCar(car.instanceId);
 
             var tuneButton = UIFactory.CreateButton(row, "Tunen", new Color(0.3f, 0.35f, 0.45f), Color.white, 26);
             tuneButton.gameObject.AddComponent<LayoutElement>().preferredWidth = 180;

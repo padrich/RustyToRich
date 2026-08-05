@@ -1,0 +1,11 @@
+modelName,carClass,basePriceMin,basePriceMax,unlockRequiredTotalProfit,unlockRequiredSalesCount
+Coupé Speedster,Coupe,15000,30000,0,5
+Familientourer Kombi,Kombi,6000,11000,0,0
+Klassiker Oldtimer,Oldtimer,9000,20000,0,0
+Kompaktrenner,Kompaktklasse,4000,7000,0,0
+Muscle Cruiser,Muscle,20000,40000,15000,0
+Offroad-Pickup,OffroadPickup,8000,18000,0,0
+Rennfeuer,Sportwagen,35000,70000,40000,0
+Sport-Limousine,SportLimousine,12000,25000,0,0
+Stadtflitzer,Kleinwagen,1500,3500,0,0
+Trailmaster SUV,SUV,18000,32000,0,0
