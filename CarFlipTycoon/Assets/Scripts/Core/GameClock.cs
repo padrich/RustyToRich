@@ -24,6 +24,14 @@ namespace CarFlipTycoon.Core
     /// Ein Vorstellen der Uhr bei geschlossener App (kein laufender Prozess, der die Differenz
     /// messen könnte) lässt sich clientseitig ohne Server-Zeitquelle grundsätzlich nicht erkennen;
     /// das ist eine bekannte Grenze rein lokaler Spielstände.
+    ///
+    /// Der Vorwärtssprung-Schutz (Punkt 2) gilt bewusst NUR innerhalb einer ununterbrochen im
+    /// Vordergrund laufenden Session: <see cref="Time.realtimeSinceStartupAsDouble"/> zählt auf
+    /// manchen Plattformen (u. a. Android Doze/Deep-Sleep) während einer echten Hintergrund-Pause
+    /// nicht zuverlässig weiter. Nach einem über <see cref="OnApplicationPause"/> erkannten
+    /// Hintergrund-Aufenthalt wird die Uhr deshalb einmalig wie beim App-Start wieder direkt an die
+    /// Systemuhr angeglichen (weiterhin nie rückwärts), statt echte Wartezeit fälschlich als Angriff
+    /// zu behandeln und für den Rest der Session hinter der realen Zeit zurückzubleiben.
     /// </summary>
     public class GameClock : MonoBehaviour
     {
@@ -35,6 +43,7 @@ namespace CarFlipTycoon.Core
 
         private DateTime _trustedUtc;
         private double _monotonicAtAnchor;
+        private bool _resyncOnNextAdvance;
 
         private void Awake()
         {
@@ -61,6 +70,10 @@ namespace CarFlipTycoon.Core
             if (pauseStatus)
             {
                 Advance();
+                // Ab jetzt bis zum nächsten Advance() kann die App suspendiert sein; der nächste
+                // Aufruf nach dem Aufwachen soll deshalb nicht gegen die (dann möglicherweise
+                // fälschlich kaum fortgeschrittene) monotone Zeit klemmen, sondern direkt resynchronisieren.
+                _resyncOnNextAdvance = true;
             }
         }
 
@@ -77,9 +90,22 @@ namespace CarFlipTycoon.Core
         private void Advance()
         {
             double nowMonotonic = Time.realtimeSinceStartupAsDouble;
+            DateTime systemNow = DateTime.UtcNow;
+
+            if (_resyncOnNextAdvance)
+            {
+                // Erster Tick nach einer Hintergrund-Pause: wie beim App-Start direkt an die
+                // Systemuhr angleichen (nur nie rückwärts) statt an die ggf. durch den Suspend
+                // verfälschte monotone Schätzung zu klemmen.
+                _trustedUtc = systemNow > _trustedUtc ? systemNow : _trustedUtc;
+                _monotonicAtAnchor = nowMonotonic;
+                _resyncOnNextAdvance = false;
+                PersistIfNewer();
+                return;
+            }
+
             double monotonicDelta = Math.Max(0.0, nowMonotonic - _monotonicAtAnchor);
             DateTime expectedFromMonotonic = _trustedUtc.AddSeconds(monotonicDelta);
-            DateTime systemNow = DateTime.UtcNow;
 
             // Systemuhr lief rückwärts (< letzte vertrauenswürdige Zeit) oder ist der seit dem
             // letzten Tick tatsächlich vergangenen Echtzeit spürbar vorausgeeilt (> Toleranz):
