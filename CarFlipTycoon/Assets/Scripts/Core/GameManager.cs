@@ -42,7 +42,10 @@ namespace CarFlipTycoon.Core
 
             // Reihenfolge ist wichtig: SaveManager muss vor allen anderen existieren,
             // da EconomyManager/GameManager direkt auf SaveManager.Instance zugreifen.
+            // GameClock direkt danach, da er ebenfalls nur SaveManager.Instance braucht und alle
+            // zeitgesteuerten Systeme (Timer/Marktplatz/Auktionen/Tagesbelohnung) ihn in Start() nutzen.
             root.AddComponent<SaveManager>();
+            root.AddComponent<GameClock>();
             root.AddComponent<EconomyManager>();
             root.AddComponent<GarageManager>();
             root.AddComponent<AdManager>();

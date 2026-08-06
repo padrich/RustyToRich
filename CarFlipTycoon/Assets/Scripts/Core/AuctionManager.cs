@@ -139,7 +139,7 @@ namespace CarFlipTycoon.Core
                 bidCount = 0,
                 maxBidCeiling = Mathf.Max(price, Mathf.RoundToInt(suggestedValue * UnityEngine.Random.Range(CeilingMultiplierMin, CeilingMultiplierMax))),
                 startTimeUtc = IdFactory.NowUtcIso(),
-                endTimeUtc = DateTime.UtcNow.AddSeconds(duration).ToString("o", CultureInfo.InvariantCulture),
+                endTimeUtc = GameClock.Instance.UtcNow.AddSeconds(duration).ToString("o", CultureInfo.InvariantCulture),
                 lastBidTimeUtc = IdFactory.NowUtcIso(),
                 nextBidIntervalSeconds = UnityEngine.Random.Range(MinBidIntervalSeconds, MaxBidIntervalSeconds),
                 status = AuctionStatus.Running
@@ -206,7 +206,7 @@ namespace CarFlipTycoon.Core
                 return false;
             }
 
-            double elapsedSeconds = (DateTime.UtcNow - lastBidAt.ToUniversalTime()).TotalSeconds;
+            double elapsedSeconds = (GameClock.Instance.UtcNow - lastBidAt.ToUniversalTime()).TotalSeconds;
             if (elapsedSeconds < auction.nextBidIntervalSeconds)
             {
                 return false;

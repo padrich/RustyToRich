@@ -97,7 +97,7 @@ namespace CarFlipTycoon.Core
                 return true;
             }
 
-            double ageSeconds = (DateTime.UtcNow - listedAt.ToUniversalTime()).TotalSeconds;
+            double ageSeconds = (GameClock.Instance.UtcNow - listedAt.ToUniversalTime()).TotalSeconds;
             return ageSeconds >= offer.lifetimeSeconds;
         }
 

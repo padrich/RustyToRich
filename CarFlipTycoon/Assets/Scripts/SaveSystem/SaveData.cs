@@ -30,5 +30,10 @@ namespace CarFlipTycoon.SaveSystem
         public List<string> claimedAchievementIds = new List<string>();
         public string lastDailyRewardDateUtc;
         public int dailyRewardStreak;
+
+        [Tooltip("Höchste jemals von GameClock beobachtete, vertrauenswürdige UTC-Zeit. Schützt Timer, " +
+                 "Marktangebote, Auktionen und die tägliche Belohnung davor, dass die Systemuhr " +
+                 "zurückgestellt wird, um Cooldowns zu umgehen.")]
+        public string lastKnownUtc;
     }
 }
