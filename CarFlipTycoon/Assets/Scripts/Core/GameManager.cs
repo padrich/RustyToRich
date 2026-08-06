@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CarFlipTycoon.Data;
 using CarFlipTycoon.SaveSystem;
@@ -14,12 +15,19 @@ namespace CarFlipTycoon.Core
     public class GameManager : MonoBehaviour
     {
         private const string CarTypeDatabaseResourcePath = "CarTypeDatabase";
+        private static readonly List<CarType> EmptyCarTypes = new List<CarType>();
 
         public static GameManager Instance { get; private set; }
 
         private CarTypeDatabase _carTypeDatabase;
 
+        /// <summary>Ausgelöst, nachdem sich der Fahrzeugbestand der Garage geändert hat (Kauf/Verkauf).</summary>
+        public event Action OnGarageChanged;
+
         public IReadOnlyList<CarInstance> OwnedCars => SaveManager.Instance.CurrentSave.ownedCars;
+
+        public IReadOnlyList<CarType> AllCarTypes =>
+            _carTypeDatabase != null ? (IReadOnlyList<CarType>)_carTypeDatabase.carTypes : EmptyCarTypes;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
@@ -36,8 +44,23 @@ namespace CarFlipTycoon.Core
             // da EconomyManager/GameManager direkt auf SaveManager.Instance zugreifen.
             root.AddComponent<SaveManager>();
             root.AddComponent<EconomyManager>();
+            root.AddComponent<GarageManager>();
             root.AddComponent<AdManager>();
             root.AddComponent<GameManager>();
+            // MarketplaceManager/TimerManager/Tuning-Manager greifen in Start() auf
+            // GameManager.Instance zu; alle Awake()-Aufrufe der zuvor hinzugefügten
+            // Komponenten laufen garantiert vor jedem Start(), daher ist die
+            // Reihenfolge ab hier unkritisch.
+            root.AddComponent<ProgressionManager>();
+            root.AddComponent<MarketplaceManager>();
+            root.AddComponent<TimerManager>();
+            root.AddComponent<CosmeticTuningManager>();
+            root.AddComponent<PerformanceTuningManager>();
+            root.AddComponent<DynoManager>();
+            root.AddComponent<AuctionManager>();
+            root.AddComponent<SalesHistoryManager>();
+            root.AddComponent<AchievementManager>();
+            root.AddComponent<DailyRewardManager>();
         }
 
         private void Awake()
@@ -57,7 +80,7 @@ namespace CarFlipTycoon.Core
             return _carTypeDatabase != null ? _carTypeDatabase.GetById(carTypeId) : null;
         }
 
-        public CarInstance AddCarToGarage(CarType carType, int purchasePrice)
+        public CarInstance AddCarToGarage(CarType carType, int purchasePrice, CarCondition condition)
         {
             if (carType == null)
             {
@@ -65,9 +88,10 @@ namespace CarFlipTycoon.Core
                 return null;
             }
 
-            var instance = new CarInstance(carType.CarTypeId, purchasePrice);
+            var instance = new CarInstance(carType.CarTypeId, purchasePrice, condition);
             SaveManager.Instance.CurrentSave.ownedCars.Add(instance);
             SaveManager.Instance.Save();
+            OnGarageChanged?.Invoke();
             return instance;
         }
 
@@ -99,12 +123,40 @@ namespace CarFlipTycoon.Core
             save.ownedCars.Remove(instance);
 
             var carType = GetCarType(instance.carTypeId);
+
+            int cosmeticTuningCost = 0;
+            if (instance.cosmeticParts != null)
+            {
+                for (int i = 0; i < instance.cosmeticParts.Count; i++)
+                {
+                    cosmeticTuningCost += instance.cosmeticParts[i].purchasePrice;
+                }
+            }
+
+            int performanceTuningCost = 0;
+            if (instance.performanceParts != null)
+            {
+                for (int i = 0; i < instance.performanceParts.Count; i++)
+                {
+                    performanceTuningCost += instance.performanceParts[i].purchasePrice;
+                }
+            }
+
+            bool hasDynoResult = instance.lastDynoResult != null && instance.lastDynoResult.hasResult;
+
             save.salesHistory.Add(new SaleRecord
             {
                 id = IdFactory.NewId(),
                 carInstanceId = instance.instanceId,
                 carTypeId = instance.carTypeId,
                 modelNameSnapshot = carType != null ? carType.modelName : instance.carTypeId,
+                purchasePrice = instance.purchasePrice,
+                purchaseDateUtc = instance.purchaseDateUtc,
+                cosmeticTuningCost = cosmeticTuningCost,
+                performanceTuningCost = performanceTuningCost,
+                hasDynoResult = hasDynoResult,
+                dynoHorsePower = hasDynoResult ? instance.lastDynoResult.horsePower : 0f,
+                dynoTorqueNm = hasDynoResult ? instance.lastDynoResult.torqueNm : 0f,
                 salePrice = salePrice,
                 saleDateUtc = IdFactory.NowUtcIso(),
                 saleType = saleType
@@ -112,6 +164,7 @@ namespace CarFlipTycoon.Core
 
             EconomyManager.Instance.AddCoins(salePrice);
             SaveManager.Instance.Save();
+            OnGarageChanged?.Invoke();
             return true;
         }
     }

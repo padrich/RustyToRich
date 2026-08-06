@@ -1,0 +1,4 @@
+carClassGroup,minSeconds,maxSeconds
+"Kleinwagen, Kompaktklasse, Kombi, Oldtimer",120,300
+"Mittelklasse, SportLimousine, OffroadPickup, SUV, Coupe",300,720
+"Sportwagen, Muscle, Oberklasse",720,1200

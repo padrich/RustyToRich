@@ -1,0 +1,20 @@
+partName,category,stage,price,horsePowerBonusFlat,horsePowerBonusPercent,torqueBonusFlat,torqueBonusPercent,rpmShift,dynoStabilityBonus,forcedInductionRole,forcedInductionBonusMultiplier,installDurationSeconds
+Sportluftfilter,Ansaugung,1,250,5.0,0.02,2.0,0.0,0,0.0,None,1.0,20.0
+Sportluftfilter-System mit Ansaugrohr,Ansaugung,2,600,9.0,0.03,4.0,0.0,0,0.0,None,1.0,35.0
+Kaltluft-Ansaugsystem,Ansaugung,3,1100,14.0,0.05,6.0,0.0,0,0.0,None,1.0,50.0
+Sportauspuff,Auspuffanlage,1,500,6.0,0.03,5.0,0.02,0,0.0,StrongerWithForcedInduction,1.5,30.0
+Sportauspuff + Downpipe,Auspuffanlage,2,1200,12.0,0.05,10.0,0.04,0,0.0,StrongerWithForcedInduction,1.6,55.0
+Racing-Downpipe (Decat),Auspuffanlage,3,2400,20.0,0.08,16.0,0.06,0,0.0,StrongerWithForcedInduction,1.8,80.0
+Chiptuning Stufe 1,Chiptuning,1,400,0.0,0.04,0.0,0.04,0,0.0,StrongerWithForcedInduction,2.5,25.0
+Chiptuning Stufe 2 (aggressiv),Chiptuning,2,900,0.0,0.07,0.0,0.07,0,0.0,StrongerWithForcedInduction,2.8,40.0
+Chiptuning Stufe 3 (Rennsoftware),Chiptuning,3,1800,0.0,0.1,0.0,0.1,0,0.0,StrongerWithForcedInduction,3.0,60.0
+Faecherkruemmer (Edelstahl),Faecherkruemmer,1,400,4.0,0.02,3.0,0.01,0,0.0,StrongerWithoutForcedInduction,0.4,40.0
+"Faecherkruemmer (Race, 4-in-1)",Faecherkruemmer,2,900,8.0,0.04,6.0,0.02,0,0.0,StrongerWithoutForcedInduction,0.4,60.0
+Kompressor-Kit Racing-Spec,Kompressor,2,7200,22.0,0.26,30.0,0.26,0,0.0,ProvidesForcedInduction,1.0,260.0
+Kompressor-Kit,Kompressor,1,4200,15.0,0.18,20.0,0.18,0,0.0,ProvidesForcedInduction,1.0,200.0
+Ladeluftkuehler Stufe 1,Ladeluftkuehler,1,900,0.0,0.0,0.0,0.0,0,0.15,RequiresForcedInduction,1.0,60.0
+Ladeluftkuehler Stufe 2 (gross),Ladeluftkuehler,2,1800,0.0,0.0,0.0,0.0,0,0.28,RequiresForcedInduction,1.0,90.0
+Race-Nockenwellen (aggressiv),Nockenwellen,2,2600,0.0,0.12,0.0,-0.06,700,0.0,None,1.0,210.0
+Sport-Nockenwellen,Nockenwellen,1,1300,0.0,0.06,0.0,-0.03,400,0.0,None,1.0,150.0
+Upgrade-Turbolader Stufe 1,Turbolader,1,3500,20.0,0.15,30.0,0.2,300,0.0,ProvidesForcedInduction,1.0,180.0
+Upgrade-Turbolader Stufe 2 (Bigturbo),Turbolader,2,6500,40.0,0.28,55.0,0.32,500,0.0,ProvidesForcedInduction,1.0,240.0

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29cd7e5f8d440ce983bb171e787bfdf, type: 3}
+  m_Name: Chiptuning_Stage1
+  m_EditorClassIdentifier:
+  partId: perf_chip_stage1
+  partName: Chiptuning Stufe 1
+  category: 7
+  description: Grundlegendes ECU-Remapping.
+  stage: 1
+  price: 400
+  horsePowerBonusFlat: 0
+  horsePowerBonusPercent: 0.04
+  torqueBonusFlat: 0
+  torqueBonusPercent: 0.04
+  rpmShift: 0
+  dynoStabilityBonus: 0.0
+  forcedInductionRole: 3
+  forcedInductionBonusMultiplier: 2.5
+  compatibilityNote: Bei Turbolader/Kompressor deutlich staerkerer Effekt als bei Saugmotoren.
+  installDurationSeconds: 25

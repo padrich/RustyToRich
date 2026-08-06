@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CarFlipTycoon.Utility;
+using UnityEngine;
 
 namespace CarFlipTycoon.Data
 {
@@ -17,21 +18,25 @@ namespace CarFlipTycoon.Data
 
         public int purchasePrice;
         public string purchaseDateUtc;
+        public CarCondition condition;
 
         public List<InstalledCosmeticPart> cosmeticParts = new List<InstalledCosmeticPart>();
         public List<InstalledPerformancePart> performanceParts = new List<InstalledPerformancePart>();
 
         public DynoResult lastDynoResult = new DynoResult();
+        [Tooltip("Vorheriges Prüfstand-Ergebnis vor der letzten Messung, für den Vorher/Nachher-Vergleich.")]
+        public DynoResult previousDynoResult = new DynoResult();
 
         public CarStatus status = CarStatus.InGarage;
 
         public CarInstance() { }
 
-        public CarInstance(string carTypeId, int purchasePrice)
+        public CarInstance(string carTypeId, int purchasePrice, CarCondition condition)
         {
             instanceId = IdFactory.NewId();
             this.carTypeId = carTypeId;
             this.purchasePrice = purchasePrice;
+            this.condition = condition;
             purchaseDateUtc = IdFactory.NowUtcIso();
             status = CarStatus.InGarage;
         }

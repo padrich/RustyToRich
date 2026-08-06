@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9822d46fd4494f29867164c82dd91d33, type: 3}
+  m_Name: CoupeSpeedster
+  m_EditorClassIdentifier:
+  carTypeId: cartype_coupespeedster
+  modelName: Coupé Speedster
+  carClass: 11
+  description: Drehfreudiges Coupe mit hohem Drehzahllimit und scharfem Handling.
+  baseEngineCurve:
+    points:
+    - rpm: 1800
+      horsePower: 70
+      torqueNm: 140
+    - rpm: 4000
+      horsePower: 160
+      torqueNm: 220
+    - rpm: 6000
+      horsePower: 230
+      torqueNm: 250
+    - rpm: 7500
+      horsePower: 210
+      torqueNm: 205
+  basePriceMin: 15000
+  basePriceMax: 30000
+  unlockRequiredTotalProfit: 0
+  unlockRequiredSalesCount: 5
+  icon: {fileID: 0}
+  additionalSprites: []

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29cd7e5f8d440ce983bb171e787bfdf, type: 3}
+  m_Name: Chiptuning_Stage3
+  m_EditorClassIdentifier:
+  partId: perf_chip_stage3
+  partName: Chiptuning Stufe 3 (Rennsoftware)
+  category: 7
+  description: Rennsoftware fuer den Einsatz mit hochwertigem Kraftstoff.
+  stage: 3
+  price: 1800
+  horsePowerBonusFlat: 0
+  horsePowerBonusPercent: 0.1
+  torqueBonusFlat: 0
+  torqueBonusPercent: 0.1
+  rpmShift: 0
+  dynoStabilityBonus: 0.0
+  forcedInductionRole: 3
+  forcedInductionBonusMultiplier: 3.0
+  compatibilityNote: Bei Turbolader/Kompressor deutlich staerkerer Effekt als bei Saugmotoren.
+  installDurationSeconds: 60

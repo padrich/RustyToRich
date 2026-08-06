@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71dfb91000444fe3b1102da756c962d2, type: 3}
+  m_Name: Felgen_DeepDish19Racing
+  m_EditorClassIdentifier:
+  partId: cosmetic_felgen_deepdish19_racing
+  partName: Deep-Dish 19 Zoll – Racing
+  category: 0
+  description: Tiefbett-Felgen mit sportlichem Auftritt.
+  price: 1800
+  valueFactor: 1.12
+  styleTags:
+  - 1
+  wheelSizeInches: 19
+  heightTier: 0
+  icon: {fileID: 0}
+  previewOverlaySprite: {fileID: 0}
+  previewSortOrder: 20
+  installDurationSeconds: 90
