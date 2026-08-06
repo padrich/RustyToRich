@@ -107,7 +107,7 @@ namespace CarFlipTycoon.Core
                 return double.MaxValue;
             }
 
-            return (DateTime.UtcNow - startedAt.ToUniversalTime()).TotalSeconds;
+            return (GameClock.Instance.UtcNow - startedAt.ToUniversalTime()).TotalSeconds;
         }
 
         /// <summary>Welchen Auto-Status ein laufender Timer dieses Typs repräsentiert.</summary>

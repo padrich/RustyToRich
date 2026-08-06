@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using CarFlipTycoon.Core;
 
 namespace CarFlipTycoon.Utility
 {
@@ -7,6 +8,15 @@ namespace CarFlipTycoon.Utility
     {
         public static string NewId() => Guid.NewGuid().ToString("N");
 
-        public static string NowUtcIso() => DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
+        /// <summary>
+        /// Manipulationssicherer Zeitstempel (siehe <see cref="GameClock"/>). Fällt außerhalb der
+        /// Spiel-Laufzeit (z. B. in Editor-Tools ohne aktive GameClock-Instanz) auf die reguläre
+        /// Systemuhr zurück.
+        /// </summary>
+        public static string NowUtcIso()
+        {
+            DateTime now = GameClock.Instance != null ? GameClock.Instance.UtcNow : DateTime.UtcNow;
+            return now.ToString("o", CultureInfo.InvariantCulture);
+        }
     }
 }

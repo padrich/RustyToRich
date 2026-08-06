@@ -47,7 +47,7 @@ namespace CarFlipTycoon.Core
                     return true;
                 }
 
-                return DateTime.UtcNow.Date > lastClaim.ToUniversalTime().Date;
+                return GameClock.Instance.UtcNow.Date > lastClaim.ToUniversalTime().Date;
             }
         }
 
@@ -73,7 +73,7 @@ namespace CarFlipTycoon.Core
             }
 
             var lastClaimDate = lastClaim.ToUniversalTime().Date;
-            var today = DateTime.UtcNow.Date;
+            var today = GameClock.Instance.UtcNow.Date;
             return lastClaimDate == today.AddDays(-1) ? save.dailyRewardStreak + 1 : 1;
         }
 

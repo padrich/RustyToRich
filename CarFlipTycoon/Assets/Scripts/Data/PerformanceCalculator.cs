@@ -44,7 +44,7 @@ namespace CarFlipTycoon.Data
                         {
                             multiplier = part.forcedInductionBonusMultiplier;
                         }
-                        else if (part.forcedInductionRole == ForcedInductionRole.StrongerWithoutForcedInduction && hasForcedInduction)
+                        else if (part.forcedInductionRole == ForcedInductionRole.StrongerWithoutForcedInduction && !hasForcedInduction)
                         {
                             multiplier = part.forcedInductionBonusMultiplier;
                         }
