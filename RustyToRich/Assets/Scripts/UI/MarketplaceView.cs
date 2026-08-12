@@ -23,8 +23,8 @@ namespace RustyToRich.UI
 
             var refreshBar = UIFactory.CreatePanel(panel, "RefreshBar", new Color(0f, 0f, 0f, 0.2f));
             var refreshBarLayoutElement = refreshBar.gameObject.AddComponent<LayoutElement>();
-            refreshBarLayoutElement.preferredHeight = 90;
-            refreshBarLayoutElement.minHeight = 90;
+            refreshBarLayoutElement.preferredHeight = 96;
+            refreshBarLayoutElement.minHeight = 96;
 
             var refreshButtonHolder = UIFactory.CreateContainer(refreshBar, "RefreshButtonHolder");
             refreshButtonHolder.anchorMin = new Vector2(0f, 0f);
@@ -32,8 +32,8 @@ namespace RustyToRich.UI
             refreshButtonHolder.offsetMin = new Vector2(16f, 10f);
             refreshButtonHolder.offsetMax = new Vector2(-16f, -10f);
 
-            var refreshButton = UIFactory.CreateButton(refreshButtonHolder, "Angebote auffrischen 🔄 (Ad)",
-                new Color(0.35f, 0.3f, 0.6f), Color.white, 24);
+            var refreshButton = UIFactory.CreateIconButton(refreshButtonHolder, IconFactory.RefreshIcon(Color.white),
+                "Angebote auffrischen (Ad)", new Color(0.42f, 0.32f, 0.58f), Color.white, 24, 34, 20);
             UIFactory.StretchFull(refreshButton.GetComponent<RectTransform>());
             refreshButton.onClick.AddListener(RefreshOffersNow);
 
@@ -84,19 +84,29 @@ namespace RustyToRich.UI
             string modelName = carType != null ? carType.modelName : offer.carTypeId;
             string className = carType != null ? carType.carClass.GetDisplayName() : "-";
 
-            var row = UIFactory.CreatePanel(_content, "Offer_" + offer.offerId, new Color(1f, 1f, 1f, 0.06f));
+            var row = UIFactory.CreateCard(_content, "Offer_" + offer.offerId, UIFactory.PanelColor, 22);
             var rowLayoutElement = row.gameObject.AddComponent<LayoutElement>();
-            rowLayoutElement.preferredHeight = 170;
-            rowLayoutElement.minHeight = 170;
+            rowLayoutElement.preferredHeight = 176;
+            rowLayoutElement.minHeight = 176;
 
             var rowLayout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
-            rowLayout.padding = new RectOffset(20, 20, 12, 12);
+            rowLayout.padding = new RectOffset(18, 18, 14, 14);
             rowLayout.spacing = 16;
             rowLayout.childAlignment = TextAnchor.MiddleLeft;
             rowLayout.childControlWidth = true;
             rowLayout.childForceExpandWidth = false;
             rowLayout.childControlHeight = true;
             rowLayout.childForceExpandHeight = true;
+
+            // Farbiger Avatar-Kreis mit Auto-Icon statt reinem Text – gibt jeder Zeile sofort
+            // eine visuelle Ankerform, an der sich das Auge orientieren kann.
+            var avatar = UIFactory.CreateRoundedPanel(row, "Avatar",
+                new Color(UIFactory.RustColor.r, UIFactory.RustColor.g, UIFactory.RustColor.b, 0.22f), 30);
+            avatar.gameObject.AddComponent<LayoutElement>().preferredWidth = 92;
+            var avatarIcon = UIFactory.CreateIcon(avatar, IconFactory.CarIcon(UIFactory.RustBrightColor), 56f);
+            avatarIcon.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            avatarIcon.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            avatarIcon.rectTransform.anchoredPosition = Vector2.zero;
 
             var infoColumn = UIFactory.CreateContainer(row, "Info");
             var infoLayoutElement = infoColumn.gameObject.AddComponent<LayoutElement>();
@@ -107,22 +117,28 @@ namespace RustyToRich.UI
             infoLayout.childForceExpandWidth = true;
             infoLayout.childControlHeight = true;
             infoLayout.childForceExpandHeight = false;
-            infoLayout.spacing = 4;
+            infoLayout.spacing = 6;
 
-            var modelText = UIFactory.CreateText(infoColumn, modelName, 34, Color.white);
-            modelText.gameObject.AddComponent<LayoutElement>().preferredHeight = 44;
+            var modelText = UIFactory.CreateText(infoColumn, modelName, 32, UIFactory.TextColor);
+            modelText.fontStyle = FontStyle.Bold;
+            modelText.gameObject.AddComponent<LayoutElement>().preferredHeight = 42;
 
-            var classText = UIFactory.CreateText(infoColumn, className, 24, new Color(0.8f, 0.8f, 0.8f));
-            classText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+            var classText = UIFactory.CreateText(infoColumn, className, 22, UIFactory.TextDimColor);
+            classText.gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
 
-            var conditionText = UIFactory.CreateText(infoColumn, offer.condition.GetDisplayName(), 24,
-                UIFactory.GetConditionColor(offer.condition));
-            conditionText.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+            var conditionBadge = UIFactory.CreateBadge(infoColumn, offer.condition.GetDisplayName(),
+                new Color(1f, 1f, 1f, 0.08f), UIFactory.GetConditionColor(offer.condition), 20, 10);
+            var conditionLayoutElement = conditionBadge.gameObject.AddComponent<LayoutElement>();
+            conditionLayoutElement.preferredHeight = 34;
+            conditionLayoutElement.preferredWidth = 160;
 
-            var buyButton = UIFactory.CreateButton(row, $"{offer.price:N0}\nCoins", new Color(0.2f, 0.55f, 0.25f), Color.white, 26);
-            buyButton.gameObject.AddComponent<LayoutElement>().preferredWidth = 220;
+            var priceBadge = UIFactory.CreateBadge(row, $"{offer.price:N0}", UIFactory.GoldColor,
+                new Color(0.12f, 0.09f, 0.02f), 26, 16);
+            priceBadge.gameObject.AddComponent<LayoutElement>().preferredWidth = 150;
+            var priceButton = priceBadge.gameObject.AddComponent<Button>();
+            priceButton.targetGraphic = priceBadge.GetComponent<Image>();
             string offerId = offer.offerId;
-            buyButton.onClick.AddListener(() => Buy(offerId));
+            priceButton.onClick.AddListener(() => Buy(offerId));
         }
 
         private void Buy(string offerId)

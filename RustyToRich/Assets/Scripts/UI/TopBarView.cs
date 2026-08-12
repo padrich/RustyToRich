@@ -17,7 +17,7 @@ namespace RustyToRich.UI
         public void Build(RectTransform panel)
         {
             var layout = panel.gameObject.AddComponent<HorizontalLayoutGroup>();
-            layout.padding = new RectOffset(24, 24, 8, 8);
+            layout.padding = new RectOffset(20, 20, 10, 10);
             layout.spacing = 16;
             layout.childAlignment = TextAnchor.MiddleLeft;
             layout.childControlWidth = true;
@@ -25,13 +25,41 @@ namespace RustyToRich.UI
             layout.childControlHeight = true;
             layout.childForceExpandHeight = true;
 
-            _coinsText = UIFactory.CreateText(panel, "Coins: 0", 36, Color.white);
-            _coinsText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+            var coinsGroup = UIFactory.CreateContainer(panel, "CoinsGroup");
+            coinsGroup.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+            var coinsLayout = coinsGroup.gameObject.AddComponent<HorizontalLayoutGroup>();
+            coinsLayout.spacing = 8;
+            coinsLayout.childAlignment = TextAnchor.MiddleLeft;
+            coinsLayout.childControlWidth = false;
+            coinsLayout.childControlHeight = true;
+            coinsLayout.childForceExpandHeight = true;
 
-            _garageText = UIFactory.CreateText(panel, "Garage: 0 / 0", 32, Color.white, TextAnchor.MiddleRight);
-            _garageText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+            var coinIcon = UIFactory.CreateIcon(coinsGroup, IconFactory.CoinIcon(UIFactory.GoldColor,
+                new Color(UIFactory.GoldColor.r * 0.7f, UIFactory.GoldColor.g * 0.7f, UIFactory.GoldColor.b * 0.7f)), 40f);
+            coinIcon.gameObject.AddComponent<LayoutElement>().preferredWidth = 40;
 
-            _dailyRewardButton = UIFactory.CreateButton(panel, "Tages-\nBonus 🎁", new Color(0.75f, 0.55f, 0.15f), Color.white, 18);
+            _coinsText = UIFactory.CreateText(coinsGroup, "0", 34, UIFactory.GoldColor);
+            _coinsText.fontStyle = FontStyle.Bold;
+            _coinsText.gameObject.AddComponent<LayoutElement>().preferredWidth = 220;
+
+            var garageGroup = UIFactory.CreateContainer(panel, "GarageGroup");
+            garageGroup.gameObject.AddComponent<LayoutElement>().preferredWidth = 130;
+            var garageLayout = garageGroup.gameObject.AddComponent<HorizontalLayoutGroup>();
+            garageLayout.spacing = 6;
+            garageLayout.childAlignment = TextAnchor.MiddleRight;
+            garageLayout.childControlWidth = false;
+            garageLayout.childControlHeight = true;
+            garageLayout.childForceExpandHeight = true;
+
+            var garageIcon = UIFactory.CreateIcon(garageGroup, IconFactory.CarIcon(UIFactory.TextDimColor), 32f);
+            garageIcon.gameObject.AddComponent<LayoutElement>().preferredWidth = 32;
+
+            _garageText = UIFactory.CreateText(garageGroup, "0 / 0", 28, UIFactory.TextColor, TextAnchor.MiddleRight);
+            _garageText.gameObject.AddComponent<LayoutElement>().preferredWidth = 90;
+
+            _dailyRewardButton = UIFactory.CreateIconButton(panel,
+                IconFactory.GiftIcon(UIFactory.GoldColor, new Color(0.95f, 0.95f, 0.95f)),
+                "Bonus", UIFactory.RustColor, Color.white, 18, 30, 16);
             _dailyRewardButton.gameObject.AddComponent<LayoutElement>().preferredWidth = 130;
             _dailyRewardButton.onClick.AddListener(ClaimDailyReward);
 
@@ -87,14 +115,14 @@ namespace RustyToRich.UI
 
         private void Refresh()
         {
-            _coinsText.text = $"Coins: {EconomyManager.Instance.Coins:N0}";
-            _garageText.text = $"Garage: {GarageManager.Instance.UsedSlots} / {GarageManager.Instance.Capacity}";
+            _coinsText.text = $"{EconomyManager.Instance.Coins:N0}";
+            _garageText.text = $"{GarageManager.Instance.UsedSlots} / {GarageManager.Instance.Capacity}";
 
             bool hasPending = DailyRewardManager.Instance.HasPendingReward;
             _dailyRewardButton.gameObject.SetActive(hasPending);
             if (hasPending)
             {
-                _dailyRewardButton.GetComponentInChildren<Text>().text = $"+{DailyRewardManager.Instance.PreviewRewardAmount()}\nCoins 🎁";
+                _dailyRewardButton.GetComponentInChildren<Text>().text = $"+{DailyRewardManager.Instance.PreviewRewardAmount()}";
             }
         }
     }
