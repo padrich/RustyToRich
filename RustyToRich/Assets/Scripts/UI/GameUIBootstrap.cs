@@ -19,9 +19,6 @@ namespace RustyToRich.UI
             History
         }
 
-        private static readonly Color TabIdleColor = new Color(0.25f, 0.3f, 0.4f);
-        private static readonly Color TabSelectedColor = new Color(0.3f, 0.55f, 0.85f);
-
         private RectTransform _tabBarPanel;
         private RectTransform _marketplacePanel;
         private RectTransform _garagePanel;
@@ -34,6 +31,11 @@ namespace RustyToRich.UI
         private Button _garageTabButton;
         private Button _auctionsTabButton;
         private Button _historyTabButton;
+
+        private Image _marketplaceTabIcon;
+        private Image _garageTabIcon;
+        private Image _auctionsTabIcon;
+        private Image _historyTabIcon;
 
         private MainTab _activeTab = MainTab.Marketplace;
 
@@ -48,7 +50,7 @@ namespace RustyToRich.UI
             rootLayout.childControlHeight = true;
             rootLayout.childForceExpandHeight = true;
 
-            var topBarPanel = UIFactory.CreatePanel(root, "TopBar", new Color(0.08f, 0.09f, 0.11f, 0.95f));
+            var topBarPanel = UIFactory.CreatePanel(root, "TopBar", UIFactory.PanelColor);
             var topBarLayoutElement = topBarPanel.gameObject.AddComponent<LayoutElement>();
             topBarLayoutElement.preferredHeight = 120;
             topBarLayoutElement.minHeight = 120;
@@ -57,23 +59,23 @@ namespace RustyToRich.UI
             var bodyContainer = UIFactory.CreateContainer(root, "Body");
             bodyContainer.gameObject.AddComponent<LayoutElement>().flexibleHeight = 1;
 
-            _marketplacePanel = UIFactory.CreatePanel(bodyContainer, "MarketplacePanel", new Color(0.12f, 0.13f, 0.16f, 1f));
+            _marketplacePanel = UIFactory.CreatePanel(bodyContainer, "MarketplacePanel", UIFactory.BackgroundColor);
             UIFactory.StretchFull(_marketplacePanel);
             _marketplacePanel.gameObject.AddComponent<MarketplaceView>().Build(_marketplacePanel);
 
-            _garagePanel = UIFactory.CreatePanel(bodyContainer, "GaragePanel", new Color(0.12f, 0.13f, 0.16f, 1f));
+            _garagePanel = UIFactory.CreatePanel(bodyContainer, "GaragePanel", UIFactory.BackgroundColor);
             UIFactory.StretchFull(_garagePanel);
             _garagePanel.gameObject.AddComponent<GarageView>().Build(_garagePanel, OpenCarDetail);
 
-            _auctionsPanel = UIFactory.CreatePanel(bodyContainer, "AuctionsPanel", new Color(0.12f, 0.13f, 0.16f, 1f));
+            _auctionsPanel = UIFactory.CreatePanel(bodyContainer, "AuctionsPanel", UIFactory.BackgroundColor);
             UIFactory.StretchFull(_auctionsPanel);
             _auctionsPanel.gameObject.AddComponent<AuctionView>().Build(_auctionsPanel);
 
-            _historyPanel = UIFactory.CreatePanel(bodyContainer, "HistoryPanel", new Color(0.12f, 0.13f, 0.16f, 1f));
+            _historyPanel = UIFactory.CreatePanel(bodyContainer, "HistoryPanel", UIFactory.BackgroundColor);
             UIFactory.StretchFull(_historyPanel);
             _historyPanel.gameObject.AddComponent<HistoryView>().Build(_historyPanel);
 
-            _carDetailPanel = UIFactory.CreatePanel(bodyContainer, "CarDetailPanel", new Color(0.12f, 0.13f, 0.16f, 1f));
+            _carDetailPanel = UIFactory.CreatePanel(bodyContainer, "CarDetailPanel", UIFactory.BackgroundColor);
             UIFactory.StretchFull(_carDetailPanel);
             _carDetailView = _carDetailPanel.gameObject.AddComponent<CarDetailView>();
             _carDetailView.Build(_carDetailPanel, CloseCarDetail);
@@ -82,23 +84,34 @@ namespace RustyToRich.UI
             // Tab-Leiste NACH den Panels aufgebaut, aber im Layout oberhalb von Body verankert
             // (unten im Screen, direkt über einer künftigen Banner-Ad-Zone) – daher als letztes
             // Kind von root hinzugefügt und per Transform-Reihenfolge nach unten sortiert.
-            _tabBarPanel = UIFactory.CreatePanel(root, "TabBar", new Color(0.05f, 0.05f, 0.06f, 0.95f));
+            _tabBarPanel = UIFactory.CreatePanel(root, "TabBar", new Color(0.047f, 0.051f, 0.059f, 0.98f));
             var tabBarLayoutElement = _tabBarPanel.gameObject.AddComponent<LayoutElement>();
-            tabBarLayoutElement.preferredHeight = 120;
-            tabBarLayoutElement.minHeight = 120;
+            tabBarLayoutElement.preferredHeight = 128;
+            tabBarLayoutElement.minHeight = 128;
+
+            var tabBarTopLine = UIFactory.CreatePanel(_tabBarPanel, "TopLine", UIFactory.BorderColor);
+            tabBarTopLine.anchorMin = new Vector2(0f, 1f);
+            tabBarTopLine.anchorMax = new Vector2(1f, 1f);
+            tabBarTopLine.pivot = new Vector2(0.5f, 1f);
+            tabBarTopLine.sizeDelta = new Vector2(0f, 2f);
+            tabBarTopLine.anchoredPosition = Vector2.zero;
 
             var tabBarLayout = _tabBarPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
-            tabBarLayout.padding = new RectOffset(8, 8, 10, 10);
-            tabBarLayout.spacing = 6;
+            tabBarLayout.padding = new RectOffset(10, 10, 8, 8);
+            tabBarLayout.spacing = 4;
             tabBarLayout.childControlWidth = true;
             tabBarLayout.childForceExpandWidth = true;
             tabBarLayout.childControlHeight = true;
             tabBarLayout.childForceExpandHeight = true;
 
-            _marketplaceTabButton = UIFactory.CreateButton(_tabBarPanel, "Marktplatz", TabIdleColor, Color.white, 22);
-            _garageTabButton = UIFactory.CreateButton(_tabBarPanel, "Garage", TabIdleColor, Color.white, 22);
-            _auctionsTabButton = UIFactory.CreateButton(_tabBarPanel, "Auktionen", TabIdleColor, Color.white, 22);
-            _historyTabButton = UIFactory.CreateButton(_tabBarPanel, "Historie", TabIdleColor, Color.white, 22);
+            _marketplaceTabButton = UIFactory.CreateTabButton(_tabBarPanel, IconFactory.TagIcon(Color.white),
+                "Markt", out _marketplaceTabIcon);
+            _garageTabButton = UIFactory.CreateTabButton(_tabBarPanel, IconFactory.CarIcon(Color.white),
+                "Garage", out _garageTabIcon);
+            _auctionsTabButton = UIFactory.CreateTabButton(_tabBarPanel, IconFactory.GavelIcon(Color.white),
+                "Auktionen", out _auctionsTabIcon);
+            _historyTabButton = UIFactory.CreateTabButton(_tabBarPanel, IconFactory.ClockIcon(Color.white),
+                "Historie", out _historyTabIcon);
 
             _marketplaceTabButton.onClick.AddListener(() => ShowTab(MainTab.Marketplace));
             _garageTabButton.onClick.AddListener(() => ShowTab(MainTab.Garage));
@@ -134,10 +147,25 @@ namespace RustyToRich.UI
             _auctionsPanel.gameObject.SetActive(tab == MainTab.Auctions);
             _historyPanel.gameObject.SetActive(tab == MainTab.History);
 
-            _marketplaceTabButton.GetComponent<Image>().color = tab == MainTab.Marketplace ? TabSelectedColor : TabIdleColor;
-            _garageTabButton.GetComponent<Image>().color = tab == MainTab.Garage ? TabSelectedColor : TabIdleColor;
-            _auctionsTabButton.GetComponent<Image>().color = tab == MainTab.Auctions ? TabSelectedColor : TabIdleColor;
-            _historyTabButton.GetComponent<Image>().color = tab == MainTab.History ? TabSelectedColor : TabIdleColor;
+            SetTabState(_marketplaceTabButton, _marketplaceTabIcon, tab == MainTab.Marketplace);
+            SetTabState(_garageTabButton, _garageTabIcon, tab == MainTab.Garage);
+            SetTabState(_auctionsTabButton, _auctionsTabIcon, tab == MainTab.Auctions);
+            SetTabState(_historyTabButton, _historyTabIcon, tab == MainTab.History);
+        }
+
+        private static void SetTabState(Button tabButton, Image tabIcon, bool isSelected)
+        {
+            tabButton.GetComponent<Image>().color = isSelected
+                ? new Color(UIFactory.RustColor.r, UIFactory.RustColor.g, UIFactory.RustColor.b, 0.28f)
+                : new Color(0f, 0f, 0f, 0f);
+            tabIcon.color = isSelected ? UIFactory.GoldColor : UIFactory.TextDimColor;
+
+            var label = tabButton.GetComponentInChildren<Text>();
+            if (label != null)
+            {
+                label.color = isSelected ? UIFactory.TextColor : UIFactory.TextDimColor;
+                label.fontStyle = isSelected ? FontStyle.Bold : FontStyle.Normal;
+            }
         }
     }
 }
