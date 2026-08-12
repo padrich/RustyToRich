@@ -30,7 +30,12 @@ namespace RustyToRich.UI
             var coinsLayout = coinsGroup.gameObject.AddComponent<HorizontalLayoutGroup>();
             coinsLayout.spacing = 8;
             coinsLayout.childAlignment = TextAnchor.MiddleLeft;
-            coinsLayout.childControlWidth = false;
+            // control=true + forceExpand=false, damit die unten gesetzten LayoutElement.preferredWidth
+            // (Icon 40px, Text 220px) tatsächlich greifen. Mit control=false (wie zuvor) ignoriert die
+            // LayoutGroup die LayoutElement-Breite komplett und der Text fällt auf seine Standard-
+            // RectTransform-Breite (100px) zurück, wodurch z. B. "2.000" auf zwei Zeilen umbricht.
+            coinsLayout.childControlWidth = true;
+            coinsLayout.childForceExpandWidth = false;
             coinsLayout.childControlHeight = true;
             coinsLayout.childForceExpandHeight = true;
 
@@ -47,7 +52,8 @@ namespace RustyToRich.UI
             var garageLayout = garageGroup.gameObject.AddComponent<HorizontalLayoutGroup>();
             garageLayout.spacing = 6;
             garageLayout.childAlignment = TextAnchor.MiddleRight;
-            garageLayout.childControlWidth = false;
+            garageLayout.childControlWidth = true;
+            garageLayout.childForceExpandWidth = false;
             garageLayout.childControlHeight = true;
             garageLayout.childForceExpandHeight = true;
 

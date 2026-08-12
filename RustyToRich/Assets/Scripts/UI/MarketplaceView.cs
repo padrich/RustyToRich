@@ -126,11 +126,17 @@ namespace RustyToRich.UI
             var classText = UIFactory.CreateText(infoColumn, className, 22, UIFactory.TextDimColor);
             classText.gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
 
-            var conditionBadge = UIFactory.CreateBadge(infoColumn, offer.condition.GetDisplayName(),
+            var badgeRow = UIFactory.CreateContainer(infoColumn, "BadgeRow");
+            badgeRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 34;
+            var badgeRowLayout = badgeRow.gameObject.AddComponent<HorizontalLayoutGroup>();
+            badgeRowLayout.childControlWidth = true;
+            badgeRowLayout.childForceExpandWidth = false;
+            badgeRowLayout.childControlHeight = true;
+            badgeRowLayout.childForceExpandHeight = true;
+
+            var conditionBadge = UIFactory.CreateBadge(badgeRow, offer.condition.GetDisplayName(),
                 new Color(1f, 1f, 1f, 0.08f), UIFactory.GetConditionColor(offer.condition), 20, 10);
-            var conditionLayoutElement = conditionBadge.gameObject.AddComponent<LayoutElement>();
-            conditionLayoutElement.preferredHeight = 34;
-            conditionLayoutElement.preferredWidth = 160;
+            conditionBadge.gameObject.AddComponent<LayoutElement>().preferredWidth = 160;
 
             var priceBadge = UIFactory.CreateBadge(row, $"{offer.price:N0}", UIFactory.GoldColor,
                 new Color(0.12f, 0.09f, 0.02f), 26, 16);
