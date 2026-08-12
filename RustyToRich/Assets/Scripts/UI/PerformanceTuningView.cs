@@ -194,7 +194,8 @@ namespace RustyToRich.UI
                 && activeTimer.payloadId == part.PartId;
             bool carBusy = activeTimer != null;
 
-            bool hardBlocked = car != null && PerformanceTuningManager.Instance.IsHardIncompatible(car, part, out string blockReason);
+            string blockReason = null;
+            bool hardBlocked = car != null && PerformanceTuningManager.Instance.IsHardIncompatible(car, part, out blockReason);
             string advisory = car != null ? PerformanceTuningManager.Instance.GetAdvisoryWarning(car, part) : null;
             string note = hardBlocked ? blockReason : (advisory ?? part.compatibilityNote);
             bool hasNote = !string.IsNullOrEmpty(note);
